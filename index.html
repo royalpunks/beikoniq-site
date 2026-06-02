@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IKONIQ — AI Health Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --obsidian: #0B0B0E;
+      --ignite: #FF4B00;
+      --white: #FFFFFF;
+      --chalk: #F4F3EE;
+      --mist: #6B6B78;
+      --dark2: #111116;
+      --dark3: #16161C;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--obsidian);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body.fa {
+      font-family: 'Vazirmatn', sans-serif;
+      direction: rtl;
+    }
+
+    /* Grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.5;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      line-height: 1.05;
+    }
+
+    body.fa h1, body.fa h2, body.fa h3 {
+      font-family: 'Vazirmatn', sans-serif;
+      font-weight: 800;
+    }
+
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 0 20px; }
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 28px 0;
+      transition: all 0.3s ease;
+    }
+
+    nav.scrolled {
+      background: rgba(11,11,14,0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 5px;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .logo em { color: var(--ignite); font-style: normal; }
+
+    .nav-center {
+      display: flex;
+      gap: 32px;
+    }
+
+    .nav-center a {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--mist);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-center a:hover { color: var(--white); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .lang-toggle {
+      display: flex;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 3px;
+    }
+
+    .lang-btn {
+      padding: 5px 14px;
+      border-radius: 40px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--mist);
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .lang-btn.active {
+      background: var(--ignite);
+      color: var(--white);
+    }
+
+    .nav-cta {
+      padding: 10px 24px;
+      background: var(--ignite);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      border-radius: 3px;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: opacity 0.2s;
+    }
+
+    .nav-cta:hover { opacity: 0.85; }
+
+    @media (max-width: 900px) {
+      .nav-center { display: none; }
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 70% at 75% 20%, rgba(255,75,0,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 40% at 15% 85%, rgba(255,75,0,0.05) 0%, transparent 60%),
+        var(--obsidian);
+    }
+
+    .hero-vertline {
+      position: absolute;
+      right: 180px;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent 0%, rgba(255,75,0,0.2) 40%, rgba(255,75,0,0.2) 60%, transparent 100%);
+    }
+
+    body.fa .hero-vertline { right: auto; left: 180px; }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ignite);
+      margin-bottom: 32px;
+    }
+
+    .hero-label-line {
+      width: 36px;
+      height: 1px;
+      background: var(--ignite);
+    }
+
+    body.fa .hero-label-line:first-child { display: none; }
+
+    .hero-h1 {
+      font-size: clamp(56px, 9vw, 120px);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -2px;
+      margin-bottom: 36px;
+    }
+
+    .hero-h1 span { display: block; }
+    .orange { color: var(--ignite); }
+
+    .hero-desc {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--mist);
+      max-width: 480px;
+      line-height: 1.8;
+      margin-bottom: 52px;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      padding: 16px 36px;
+      background: var(--ignite);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary:hover { opacity: 0.85; }
+
+    .btn-outline {
+      padding: 16px 36px;
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,0.12);
+      text-decoration: none;
+      transition: border-color 0.2s;
+    }
+
+    .btn-outline:hover { border-color: rgba(255,255,255,0.3); }
+
+    .hero-stats {
+      position: absolute;
+      right: 0; bottom: 100px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    body.fa .hero-stats { right: auto; left: 0; }
+
+    .hero-stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--white);
+    }
+
+    body.fa .hero-stat-num { font-family: 'Vazirmatn', sans-serif; }
+    .hero-stat-num em { color: var(--ignite); font-style: normal; }
+
+    .hero-stat-lbl {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--mist);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    body.fa .hero-stat-lbl { text-align: left; }
+
+    @media (max-width: 900px) {
+      .hero-stats { display: none; }
+    }
+
+    /* ===== SHARED SECTION STYLES ===== */
+    section { padding: 130px 0; }
+
+    @media (max-width: 768px) { section { padding: 80px 0; } }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ignite);
+      margin-bottom: 22px;
+    }
+
+    .eyebrow::after {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--ignite);
+    }
+
+    body.fa .eyebrow::after { display: none; }
+    body.fa .eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--ignite);
+    }
+
+    .section-h2 {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+
+    .section-h2 em { color: var(--ignite); font-style: normal; }
+
+    .section-body {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--mist);
+      line-height: 1.8;
+      max-width: 520px;
+    }
+
+    /* ===== PROBLEM ===== */
+    .problem {
+      background: var(--dark2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .problem-grid { grid-template-columns: 1fr; gap: 60px; }
+    }
+
+    .problem-items {
+      margin-top: 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .problem-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .problem-item:first-child { border-top: 1px solid var(--border); }
+
+    .prob-dash {
+      color: var(--ignite);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+      font-size: 18px;
+    }
+
+    .prob-text {
+      font-size: 15px;
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    .stats-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 52px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 56px; height: 2px;
+      background: var(--ignite);
+    }
+
+    .big-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 88px;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--white);
+    }
+
+    body.fa .big-num { font-family: 'Vazirmatn', sans-serif; }
+    .big-num em { color: var(--ignite); font-style: normal; }
+
+    .big-label {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--mist);
+      line-height: 1.65;
+      margin-top: 10px;
+      max-width: 280px;
+    }
+
+    .card-divider {
+      width: 48px;
+      height: 1px;
+      background: var(--border);
+      margin: 36px 0;
+    }
+
+    /* ===== SERVICES ===== */
+    .services-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 72px;
+      align-items: end;
+    }
+
+    @media (max-width: 768px) {
+      .services-header { grid-template-columns: 1fr; margin-bottom: 48px; }
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .services-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .services-grid { grid-template-columns: 1fr; }
+    }
+
+    .service-card {
+      background: var(--obsidian);
+      padding: 44px 36px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.25s;
+    }
+
+    .service-card:hover { background: #111117; }
+
+    .service-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--ignite);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    body.fa .service-card::after { transform-origin: right; }
+
+    .service-card:hover::after { transform: scaleX(1); }
+
+    .svc-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--ignite);
+      letter-spacing: 0.15em;
+      margin-bottom: 32px;
+      opacity: 0.7;
+    }
+
+    .svc-icon {
+      font-size: 26px;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    .svc-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 14px;
+      line-height: 1.25;
+      font-family: 'Syne', sans-serif;
+    }
+
+    body.fa .svc-title { font-family: 'Vazirmatn', sans-serif; }
+
+    .svc-desc {
+      font-size: 13.5px;
+      color: var(--mist);
+      line-height: 1.72;
+    }
+
+    /* ===== HOW IT WORKS ===== */
+    .how { background: var(--dark2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .how-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      margin-bottom: 88px;
+      align-items: end;
+    }
+
+    @media (max-width: 768px) {
+      .how-top { grid-template-columns: 1fr; margin-bottom: 56px; gap: 40px; }
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 700px) {
+      .steps { grid-template-columns: 1fr; }
+    }
+
+    .step {
+      background: var(--obsidian);
+      padding: 48px 36px;
+    }
+
+    .step-badge {
+      width: 48px;
+      height: 48px;
+      border: 1px solid rgba(255,75,0,0.3);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--ignite);
+      margin-bottom: 32px;
+    }
+
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 14px;
+    }
+
+    body.fa .step-title { font-family: 'Vazirmatn', sans-serif; }
+
+    .step-desc {
+      font-size: 14px;
+      color: var(--mist);
+      line-height: 1.72;
+    }
+
+    /* ===== WHY IKONIQ ===== */
+    .why-layout {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 80px;
+    }
+
+    @media (max-width: 900px) {
+      .why-layout { grid-template-columns: 1fr; }
+    }
+
+    .reasons {
+      margin-top: 52px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .reason {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 20px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+
+    .reason:first-child { border-top: 1px solid var(--border); }
+
+    .reason-n {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--ignite);
+      opacity: 0.6;
+      padding-top: 4px;
+    }
+
+    .reason-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+      font-family: 'Syne', sans-serif;
+    }
+
+    body.fa .reason-title { font-family: 'Vazirmatn', sans-serif; }
+
+    .reason-text {
+      font-size: 13.5px;
+      color: var(--mist);
+      line-height: 1.72;
+    }
+
+    .exclusive-panel {
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 48px 40px;
+      position: sticky;
+      top: 110px;
+    }
+
+    .exclusive-bar {
+      width: 40px;
+      height: 3px;
+      background: var(--ignite);
+      margin-bottom: 32px;
+    }
+
+    .exclusive-h {
+      font-family: 'Syne', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 18px;
+    }
+
+    body.fa .exclusive-h { font-family: 'Vazirmatn', sans-serif; }
+
+    .exclusive-p {
+      font-size: 14px;
+      color: var(--mist);
+      line-height: 1.75;
+      margin-bottom: 36px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 8px 18px;
+      background: rgba(255,75,0,0.08);
+      border: 1px solid rgba(255,75,0,0.2);
+      border-radius: 40px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ignite);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--mist);
+    }
+
+    .contact-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--ignite);
+      flex-shrink: 0;
+    }
+
+    .contact-row a {
+      color: var(--white);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-row a:hover { color: var(--ignite); }
+
+    /* ===== CTA ===== */
+    .cta-band {
+      background: var(--ignite);
+      padding: 110px 0;
+    }
+
+    .cta-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .cta-h {
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 0.95;
+    }
+
+    .cta-sub {
+      font-size: 16px;
+      color: rgba(255,255,255,0.65);
+      margin-top: 18px;
+      max-width: 460px;
+      line-height: 1.65;
+    }
+
+    .btn-dark {
+      padding: 20px 44px;
+      background: var(--obsidian);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 3px;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: opacity 0.2s;
+    }
+
+    .btn-dark:hover { opacity: 0.8; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--obsidian);
+      border-top: 1px solid var(--border);
+      padding: 64px 0;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 5px;
+      color: var(--white);
+    }
+
+    .footer-logo em { color: var(--ignite); font-style: normal; }
+
+    .footer-slogan {
+      font-size: 11px;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 8px;
+    }
+
+    .footer-nav {
+      display: flex;
+      gap: 28px;
+    }
+
+    .footer-nav a {
+      font-size: 12px;
+      color: var(--mist);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+
+    .footer-nav a:hover { color: var(--white); }
+
+    .footer-bottom {
+      margin-top: 52px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: #2e2e35;
+    }
+
+    .footer-domain {
+      font-size: 12px;
+      color: #2e2e35;
+      font-family: monospace;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .fade-up.in { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.1s; }
+    .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; }
+    .d4 { transition-delay: 0.4s; }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--obsidian); }
+    ::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="logo">IKON<em>IQ</em></a>
+      <div class="nav-center">
+        <a href="#services" data-en="Services" data-fa="خدمات">Services</a>
+        <a href="#how" data-en="How It Works" data-fa="چطور کار می‌کند">How It Works</a>
+        <a href="#why" data-en="Why IKONIQ" data-fa="چرا IKONIQ">Why IKONIQ</a>
+        <a href="#contact" data-en="Contact" data-fa="تماس">Contact</a>
+      </div>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button class="lang-btn active" onclick="setLang('en')">EN</button>
+          <button class="lang-btn" onclick="setLang('fa')">FA</button>
+        </div>
+        <a href="#contact" class="nav-cta" data-en="Get Started" data-fa="شروع کنید">Get Started</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-vertline"></div>
+  <div class="container hero-inner">
+    <div class="hero-label fade-up">
+      <span class="hero-label-line"></span>
+      <span data-en="AI Health Platform — Iran" data-fa="پلتفرم هوش مصنوعی سلامت — ایران">AI Health Platform — Iran</span>
+    </div>
+    <h1 class="hero-h1 fade-up d1">
+      <span data-en="Your Health." data-fa=".سلامتی شما">Your Health.</span>
+      <span class="orange" data-en="Elevated." data-fa=".ارتقاء یافته">Elevated.</span>
+    </h1>
+    <p class="hero-desc fade-up d2"
+       data-en="IKONIQ is Iran's most advanced AI platform for gyms, health clubs, and wellness businesses. We automate growth, retain members, and deliver measurable results."
+       data-fa="IKONIQ پیشرفته‌ترین پلتفرم هوش مصنوعی ایران برای باشگاه‌ها، مراکز سلامت و کسب‌وکارهای سلامت است. رشد را خودکار می‌کنیم، اعضا را حفظ می‌کنیم و نتایج واقعی ارائه می‌دهیم.">
+      IKONIQ is Iran's most advanced AI platform for gyms, health clubs, and wellness businesses. We automate growth, retain members, and deliver measurable results.
+    </p>
+    <div class="hero-btns fade-up d3">
+      <a href="#contact" class="btn-primary" data-en="Book a Demo" data-fa="درخواست دمو">Book a Demo</a>
+      <a href="#services" class="btn-outline" data-en="See What We Do" data-fa="ببینید چه می‌کنیم">See What We Do</a>
+    </div>
+  </div>
+  <div class="hero-stats container">
+    <div class="hero-stat">
+      <div class="hero-stat-num">80<em>%</em></div>
+      <div class="hero-stat-lbl" data-en="Leads lost by avg club" data-fa="سرنخ از دست رفته">Leads lost by avg club</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">3<em>x</em></div>
+      <div class="hero-stat-lbl" data-en="Revenue uplift with AI" data-fa="افزایش درآمد با هوش مصنوعی">Revenue uplift with AI</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">24<em>/7</em></div>
+      <div class="hero-stat-lbl" data-en="AI running while you sleep" data-fa="هوش مصنوعی همیشه فعال">AI running while you sleep</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="container">
+    <div class="problem-grid">
+      <div>
+        <div class="eyebrow" data-en="The Problem" data-fa="مشکل">The Problem</div>
+        <h2 class="section-h2"
+            data-en="Most clubs are losing revenue they don't even know about."
+            data-fa="اکثر باشگاه‌ها درآمدی را از دست می‌دهند که حتی نمی‌دانند.">
+          Most clubs are losing revenue they don't even know about.
+        </h2>
+        <div class="problem-items">
+          <div class="problem-item fade-up">
+            <span class="prob-dash">—</span>
+            <span class="prob-text" data-en="Leads arrive via Telegram and Instagram — and vanish with zero follow-up" data-fa="سرنخ‌ها از تلگرام و اینستاگرام می‌آیند و بدون هیچ پیگیری ناپدید می‌شوند">Leads arrive via Telegram and Instagram — and vanish with zero follow-up</span>
+          </div>
+          <div class="problem-item fade-up d1">
+            <span class="prob-dash">—</span>
+            <span class="prob-text" data-en="Members stop attending after 6 weeks. No one notices until renewal month" data-fa="اعضا بعد از ۶ هفته حضور را متوقف می‌کنند. هیچکس تا ماه تمدید متوجه نمی‌شود">Members stop attending after 6 weeks. No one notices until renewal month</span>
+          </div>
+          <div class="problem-item fade-up d2">
+            <span class="prob-dash">—</span>
+            <span class="prob-text" data-en="Memberships expire silently because no follow-up system exists" data-fa="اشتراک‌ها در سکوت منقضی می‌شوند چون هیچ سیستم پیگیری وجود ندارد">Memberships expire silently because no follow-up system exists</span>
+          </div>
+          <div class="problem-item fade-up d3">
+            <span class="prob-dash">—</span>
+            <span class="prob-text" data-en="Staff waste hours on tasks that AI can handle in seconds" data-fa="کارکنان ساعت‌ها صرف کارهایی می‌کنند که هوش مصنوعی در ثانیه‌ها انجام می‌دهد">Staff waste hours on tasks that AI can handle in seconds</span>
+          </div>
+          <div class="problem-item fade-up d4">
+            <span class="prob-dash">—</span>
+            <span class="prob-text" data-en="Owners have no real visibility into what's driving revenue or killing it" data-fa="مدیران هیچ دید واقعی از آنچه درآمد ایجاد می‌کند یا آن را از بین می‌برد ندارند">Owners have no real visibility into what's driving revenue or killing it</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="stats-card fade-up">
+          <div class="big-num">70<em>%</em></div>
+          <div class="big-label"
+               data-en="of gym leads never receive a single follow-up. That is revenue walking out before it ever walked in."
+               data-fa="از سرنخ‌های باشگاه هرگز یک پیام پیگیری دریافت نمی‌کنند. این درآمدی است که قبل از ورود خارج می‌شود.">
+            of gym leads never receive a single follow-up. That is revenue walking out before it ever walked in.
+          </div>
+          <div class="card-divider"></div>
+          <div class="big-num">60<em>%</em></div>
+          <div class="big-label"
+               data-en="of members who go inactive will not renew. Most clubs have no system to catch them before it's too late."
+               data-fa="از اعضای غیرفعال تمدید نمی‌کنند. اکثر باشگاه‌ها هیچ سیستمی برای متوقف کردن آنها قبل از دیر شدن ندارند.">
+            of members who go inactive will not renew. Most clubs have no system to catch them before it's too late.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="services-header">
+      <div>
+        <div class="eyebrow" data-en="What We Do" data-fa="چه می‌کنیم">What We Do</div>
+        <h2 class="section-h2"
+            data-en="Six AI systems. One platform. Total transformation."
+            data-fa="شش سیستم هوش مصنوعی. یک پلتفرم. تحول کامل.">
+          Six AI systems. One platform. Total transformation.
+        </h2>
+      </div>
+      <div>
+        <p class="section-body"
+           data-en="Every system is purpose-built for health and fitness businesses in Iran. Not generic software. Not adapted tools. Built from scratch for your market."
+           data-fa="هر سیستم به طور خاص برای کسب‌وکارهای سلامت و تناسب اندام در ایران ساخته شده است. نرم‌افزار عمومی نیست. ابزارهای تطبیق‌یافته نیست. از ابتدا برای بازار شما ساخته شده است.">
+          Every system is purpose-built for health and fitness businesses in Iran. Not generic software. Not adapted tools. Built from scratch for your market.
+        </p>
+      </div>
+    </div>
+    <div class="services-grid">
+      <div class="service-card fade-up">
+        <div class="svc-num">01</div>
+        <span class="svc-icon">⚡</span>
+        <div class="svc-title" data-en="AI Lead Capture" data-fa="جذب سرنخ با هوش مصنوعی">AI Lead Capture</div>
+        <div class="svc-desc"
+             data-en="Every inquiry from Telegram, Instagram, and WhatsApp is captured, qualified, and prioritized instantly. No lead escapes."
+             data-fa="هر استعلامی از تلگرام، اینستاگرام و واتساپ فوری ضبط، ارزیابی و اولویت‌بندی می‌شود. هیچ سرنخی فرار نمی‌کند.">
+          Every inquiry from Telegram, Instagram, and WhatsApp is captured, qualified, and prioritized instantly. No lead escapes.
+        </div>
+      </div>
+      <div class="service-card fade-up d1">
+        <div class="svc-num">02</div>
+        <span class="svc-icon">🔄</span>
+        <div class="svc-title" data-en="Member Retention AI" data-fa="هوش مصنوعی حفظ عضو">Member Retention AI</div>
+        <div class="svc-desc"
+             data-en="Our AI detects at-risk members before they churn and triggers personalized re-engagement at precisely the right moment."
+             data-fa="هوش مصنوعی ما اعضای در معرض خطر را قبل از ریزش شناسایی می‌کند و تعامل مجدد شخصی‌سازی‌شده را در لحظه دقیق فعال می‌کند.">
+          Our AI detects at-risk members before they churn and triggers personalized re-engagement at precisely the right moment.
+        </div>
+      </div>
+      <div class="service-card fade-up d2">
+        <div class="svc-num">03</div>
+        <span class="svc-icon">🏋️</span>
+        <div class="svc-title" data-en="AI Training Plans" data-fa="برنامه‌های تمرینی هوش مصنوعی">AI Training Plans</div>
+        <div class="svc-desc"
+             data-en="Personalized training programs generated by AI based on goals, fitness level, and available equipment. Delivered via Telegram in seconds."
+             data-fa="برنامه‌های تمرینی شخصی‌سازی‌شده توسط هوش مصنوعی. بر اساس اهداف، سطح آمادگی و تجهیزات. در ثانیه‌ها از طریق تلگرام ارائه می‌شود.">
+          Personalized training programs generated by AI based on goals, fitness level, and available equipment. Delivered via Telegram in seconds.
+        </div>
+      </div>
+      <div class="service-card fade-up">
+        <div class="svc-num">04</div>
+        <span class="svc-icon">🥗</span>
+        <div class="svc-title" data-en="AI Nutrition Guidance" data-fa="راهنمایی تغذیه با هوش مصنوعی">AI Nutrition Guidance</div>
+        <div class="svc-desc"
+             data-en="Tailored nutrition plans rooted in Iranian dietary culture and aligned with your members' fitness goals. A premium service they will pay for."
+             data-fa="برنامه‌های تغذیه متناسب با فرهنگ غذایی ایرانی و اهداف تناسب اندام اعضا. یک خدمات ممتاز که اعضا برایش پول می‌پردازند.">
+          Tailored nutrition plans rooted in Iranian dietary culture and aligned with your members' fitness goals. A premium service they will pay for.
+        </div>
+      </div>
+      <div class="service-card fade-up d1">
+        <div class="svc-num">05</div>
+        <span class="svc-icon">📊</span>
+        <div class="svc-title" data-en="Business Intelligence" data-fa="هوش تجاری">Business Intelligence</div>
+        <div class="svc-desc"
+             data-en="Real-time visibility into your club's health. Member activity, revenue, lead pipeline, retention rates — all in one live dashboard."
+             data-fa="دید لحظه‌ای از سلامت باشگاه شما. فعالیت اعضا، درآمد، خط لوله سرنخ، نرخ نگهداشت — همه در یک داشبورد زنده.">
+          Real-time visibility into your club's health. Member activity, revenue, lead pipeline, retention rates — all in one live dashboard.
+        </div>
+      </div>
+      <div class="service-card fade-up d2">
+        <div class="svc-num">06</div>
+        <span class="svc-icon">🤖</span>
+        <div class="svc-title" data-en="24/7 AI Club Assistant" data-fa="دستیار هوش مصنوعی ۲۴/۷">24/7 AI Club Assistant</div>
+        <div class="svc-desc"
+             data-en="A dedicated AI agent on your Telegram channel answering member questions, handling bookings, and representing your club with precision around the clock."
+             data-fa="یک عامل هوش مصنوعی اختصاصی در کانال تلگرام شما که سوالات اعضا را پاسخ می‌دهد، رزروها را مدیریت می‌کند و باشگاه شما را شبانه‌روز با دقت نمایندگی می‌کند.">
+          A dedicated AI agent on your Telegram channel answering member questions, handling bookings, and representing your club with precision around the clock.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="how-top">
+      <div>
+        <div class="eyebrow" data-en="The Process" data-fa="فرآیند">The Process</div>
+        <h2 class="section-h2"
+            data-en="Live in <em>72 hours.</em> No IT team needed."
+            data-fa="در <em>۷۲ ساعت</em> فعال. بدون نیاز به تیم فناوری.">
+          Live in <em>72 hours.</em> No IT team needed.
+        </h2>
+      </div>
+      <div>
+        <p class="section-body"
+           data-en="We handle the entire setup. You focus on running your business. The systems are live before you finish your first week."
+           data-fa="ما تمام نصب را مدیریت می‌کنیم. شما روی اداره کسب‌وکارتان تمرکز کنید. سیستم‌ها قبل از پایان هفته اول شما فعال هستند.">
+          We handle the entire setup. You focus on running your business. The systems are live before you finish your first week.
+        </p>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-badge">01</div>
+        <div class="step-title" data-en="Connect" data-fa="اتصال">Connect</div>
+        <div class="step-desc"
+             data-en="We integrate with your Telegram, Instagram, and existing tools. Zero technical requirement from your side. Our team handles every step of setup."
+             data-fa="ما با تلگرام، اینستاگرام و ابزارهای موجود شما یکپارچه می‌شویم. هیچ نیاز فنی از طرف شما وجود ندارد. تیم ما هر مرحله از نصب را مدیریت می‌کند.">
+          We integrate with your Telegram, Instagram, and existing tools. Zero technical requirement from your side. Our team handles every step of setup.
+        </div>
+      </div>
+      <div class="step fade-up d1">
+        <div class="step-badge">02</div>
+        <div class="step-title" data-en="Automate" data-fa="خودکارسازی">Automate</div>
+        <div class="step-desc"
+             data-en="Your AI systems go live within 72 hours. Lead capture, member retention, AI plans, and your club assistant are all activated and running simultaneously."
+             data-fa="سیستم‌های هوش مصنوعی شما ظرف ۷۲ ساعت فعال می‌شوند. جذب سرنخ، حفظ عضو، برنامه‌های هوش مصنوعی و دستیار باشگاه شما همه به طور همزمان فعال و در حال اجرا هستند.">
+          Your AI systems go live within 72 hours. Lead capture, member retention, AI plans, and your club assistant are all activated and running simultaneously.
+        </div>
+      </div>
+      <div class="step fade-up d2">
+        <div class="step-badge">03</div>
+        <div class="step-title" data-en="Grow" data-fa="رشد کنید">Grow</div>
+        <div class="step-desc"
+             data-en="Watch your dashboard update in real time. More leads converting, members staying longer, renewals happening automatically. Monthly reports quantify every result."
+             data-fa="داشبورد خود را در زمان واقعی تماشا کنید. سرنخ‌های بیشتری تبدیل می‌شوند، اعضا بیشتر می‌مانند، تمدیدها به صورت خودکار انجام می‌شوند. گزارش‌های ماهانه هر نتیجه‌ای را کمی می‌کنند.">
+          Watch your dashboard update in real time. More leads converting, members staying longer, renewals happening automatically. Monthly reports quantify every result.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY IKONIQ -->
+<section id="why">
+  <div class="container">
+    <div class="why-layout">
+      <div>
+        <div class="eyebrow" data-en="Why IKONIQ" data-fa="چرا IKONIQ">Why IKONIQ</div>
+        <h2 class="section-h2"
+            data-en="Not built for every gym. Built for the <em>serious</em> ones."
+            data-fa="برای هر باشگاهی ساخته نشده. برای <em>جدی‌ها</em> ساخته شده.">
+          Not built for every gym. Built for the <em>serious</em> ones.
+        </h2>
+        <div class="reasons">
+          <div class="reason fade-up">
+            <div class="reason-n">01</div>
+            <div>
+              <div class="reason-title" data-en="Health and AI — exclusively" data-fa="سلامت و هوش مصنوعی — به طور انحصاری">Health and AI — exclusively</div>
+              <div class="reason-text" data-en="We operate only in health and fitness. Every system we build, every decision we make is designed for one type of business: yours." data-fa="ما فقط در حوزه سلامت و تناسب اندام فعالیت می‌کنیم. هر سیستمی که می‌سازیم، هر تصمیمی که می‌گیریم برای یک نوع کسب‌وکار طراحی شده: مال شما.">We operate only in health and fitness. Every system we build, every decision we make is designed for one type of business: yours.</div>
+            </div>
+          </div>
+          <div class="reason fade-up d1">
+            <div class="reason-n">02</div>
+            <div>
+              <div class="reason-title" data-en="Results, not software" data-fa="نتایج، نه نرم‌افزار">Results, not software</div>
+              <div class="reason-text" data-en="We don't sell technology. We sell outcomes. More revenue, lower churn, stronger retention. The AI is invisible. What it delivers is not." data-fa="ما فناوری نمی‌فروشیم. نتایج می‌فروشیم. درآمد بیشتر، ریزش کمتر، نگهداشت قوی‌تر. هوش مصنوعی نامرئی است. آنچه ارائه می‌دهد نیست.">We don't sell technology. We sell outcomes. More revenue, lower churn, stronger retention. The AI is invisible. What it delivers is not.</div>
+            </div>
+          </div>
+          <div class="reason fade-up d2">
+            <div class="reason-n">03</div>
+            <div>
+              <div class="reason-title" data-en="Institutional backing" data-fa="حمایت نهادی">Institutional backing</div>
+              <div class="reason-text" data-en="IKONIQ holds strategic partnerships with key organizations in Iran's health and sports sector — bringing a level of credibility and infrastructure no other platform can match." data-fa="IKONIQ مشارکت‌های استراتژیک با سازمان‌های کلیدی در بخش سلامت و ورزش ایران دارد — سطحی از اعتبار و زیرساخت را ارائه می‌دهد که هیچ پلتفرم دیگری نمی‌تواند با آن برابری کند.">IKONIQ holds strategic partnerships with key organizations in Iran's health and sports sector — bringing a level of credibility and infrastructure no other platform can match.</div>
+            </div>
+          </div>
+          <div class="reason fade-up d3">
+            <div class="reason-n">04</div>
+            <div>
+              <div class="reason-title" data-en="Built for Iran. Ready for the world." data-fa="ساخته شده برای ایران. آماده برای جهان.">Built for Iran. Ready for the world.</div>
+              <div class="reason-text" data-en="Native Telegram integration, Farsi-first design, local infrastructure. And engineered from day one to scale globally." data-fa="یکپارچه‌سازی بومی تلگرام، طراحی فارسی‌محور، زیرساخت محلی. و از همان روز اول برای مقیاس‌گذاری جهانی طراحی شده است.">Native Telegram integration, Farsi-first design, local infrastructure. And engineered from day one to scale globally.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="exclusive-panel fade-up d1">
+          <div class="exclusive-bar"></div>
+          <div class="exclusive-h"
+               data-en="We work with a limited number of businesses at any time."
+               data-fa="ما در هر زمان با تعداد محدودی از کسب‌وکارها کار می‌کنیم.">
+            We work with a limited number of businesses at any time.
+          </div>
+          <div class="exclusive-p"
+               data-en="Every client receives our full attention. We don't scale by cutting corners. If you're serious about transforming your health business with AI, we want to speak with you."
+               data-fa="هر مشتری توجه کامل ما را دریافت می‌کند. با کم کردن از کیفیت مقیاس نمی‌گذاریم. اگر جدی هستید که کسب‌وکار سلامتتان را با هوش مصنوعی متحول کنید، می‌خواهیم با شما صحبت کنیم.">
+            Every client receives our full attention. We don't scale by cutting corners. If you're serious about transforming your health business with AI, we want to speak with you.
+          </div>
+          <div class="pill" data-en="Limited Availability" data-fa="ظرفیت محدود">Limited Availability</div>
+          <div class="contact-list">
+            <div class="contact-row">
+              <div class="contact-dot"></div>
+              <span data-en="Telegram: " data-fa="تلگرام: ">Telegram: </span>
+              <a href="https://t.me/ikoniq">@ikoniq</a>
+            </div>
+            <div class="contact-row">
+              <div class="contact-dot"></div>
+              <span data-en="Email: " data-fa="ایمیل: ">Email: </span>
+              <a href="mailto:hello@beikoniq.com">hello@beikoniq.com</a>
+            </div>
+            <div class="contact-row">
+              <div class="contact-dot"></div>
+              <span data-en="WhatsApp available" data-fa="واتساپ موجود است">WhatsApp available</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band" id="contact">
+  <div class="container">
+    <div class="cta-flex">
+      <div>
+        <h2 class="cta-h" data-en="Ready to Be IKONIQ?" data-fa="آماده‌اید که IKONIQ باشید؟">Ready to Be IKONIQ?</h2>
+        <p class="cta-sub"
+           data-en="Book a free 30-minute strategy session. We'll show you exactly what IKONIQ can do for your business — with real numbers."
+           data-fa="یک جلسه استراتژی رایگان ۳۰ دقیقه‌ای رزرو کنید. دقیقاً نشان می‌دهیم IKONIQ چه کاری می‌تواند برای کسب‌وکار شما انجام دهد — با اعداد واقعی.">
+          Book a free 30-minute strategy session. We'll show you exactly what IKONIQ can do for your business — with real numbers.
+        </p>
+      </div>
+      <a href="https://t.me/ikoniq" class="btn-dark" data-en="Message Us on Telegram" data-fa="در تلگرام پیام دهید">Message Us on Telegram</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">IKON<em>IQ</em></div>
+        <div class="footer-slogan" data-en="Be IKONIQ" data-fa="IKONIQ باشید">Be IKONIQ</div>
+      </div>
+      <div class="footer-nav">
+        <a href="#services" data-en="Services" data-fa="خدمات">Services</a>
+        <a href="#how" data-en="Process" data-fa="فرآیند">Process</a>
+        <a href="#why" data-en="Why Us" data-fa="چرا ما">Why Us</a>
+        <a href="#contact" data-en="Contact" data-fa="تماس">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy" data-en="© 2025 IKONIQ. All rights reserved." data-fa="© ۲۰۲۵ IKONIQ. تمام حقوق محفوظ است.">© 2025 IKONIQ. All rights reserved.</div>
+      <div class="footer-domain">beikoniq.com</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Language toggle
+  function setLang(lang) {
+    const btns = document.querySelectorAll('.lang-btn');
+    btns.forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+
+    if (lang === 'fa') {
+      document.body.classList.add('fa');
+      document.documentElement.lang = 'fa';
+      document.documentElement.dir = 'rtl';
+    } else {
+      document.body.classList.remove('fa');
+      document.documentElement.lang = 'en';
+      document.documentElement.dir = 'ltr';
+    }
+
+    document.querySelectorAll(`[data-${lang}]`).forEach(el => {
+      const val = el.getAttribute(`data-${lang}`);
+      if (val) el.innerHTML = val;
+    });
+  }
+
+  // Scroll nav
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Intersection observer for fade-up
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+  // Hero immediate
+  setTimeout(() => {
+    document.querySelectorAll('.hero .fade-up').forEach(el => el.classList.add('in'));
+  }, 120);
+</script>
+
+</body>
+</html>
