@@ -1,1297 +1,1031 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IKONIQ — AI Health Platform</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --obsidian: #0B0B0E;
-      --ignite: #FF4B00;
-      --white: #FFFFFF;
-      --chalk: #F4F3EE;
-      --mist: #6B6B78;
-      --dark2: #111116;
-      --dark3: #16161C;
-      --border: rgba(255,255,255,0.07);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--obsidian);
-      color: var(--white);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 400;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    body.fa {
-      font-family: 'Vazirmatn', sans-serif;
-      direction: rtl;
-    }
-
-    /* Grain overlay */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 9998;
-      opacity: 0.5;
-    }
-
-    h1, h2, h3 {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      line-height: 1.05;
-    }
-
-    body.fa h1, body.fa h2, body.fa h3 {
-      font-family: 'Vazirmatn', sans-serif;
-      font-weight: 800;
-    }
-
-    .container {
-      max-width: 1160px;
-      margin: 0 auto;
-      padding: 0 40px;
-    }
-
-    @media (max-width: 768px) {
-      .container { padding: 0 20px; }
-    }
-
-    /* ===== NAV ===== */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-      padding: 28px 0;
-      transition: all 0.3s ease;
-    }
-
-    nav.scrolled {
-      background: rgba(11,11,14,0.94);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      padding: 18px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    nav .nav-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 20px;
-      letter-spacing: 5px;
-      color: var(--white);
-      text-decoration: none;
-    }
-
-    .logo em { color: var(--ignite); font-style: normal; }
-
-    .nav-center {
-      display: flex;
-      gap: 32px;
-    }
-
-    .nav-center a {
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      color: var(--mist);
-      text-decoration: none;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-
-    .nav-center a:hover { color: var(--white); }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .lang-toggle {
-      display: flex;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 40px;
-      padding: 3px;
-    }
-
-    .lang-btn {
-      padding: 5px 14px;
-      border-radius: 40px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      color: var(--mist);
-      transition: all 0.2s;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .lang-btn.active {
-      background: var(--ignite);
-      color: var(--white);
-    }
-
-    .nav-cta {
-      padding: 10px 24px;
-      background: var(--ignite);
-      color: var(--white);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      border-radius: 3px;
-      text-decoration: none;
-      text-transform: uppercase;
-      transition: opacity 0.2s;
-    }
-
-    .nav-cta:hover { opacity: 0.85; }
-
-    @media (max-width: 900px) {
-      .nav-center { display: none; }
-    }
-
-    /* ===== HERO ===== */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: flex-end;
-      padding-bottom: 100px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 70% at 75% 20%, rgba(255,75,0,0.09) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 40% at 15% 85%, rgba(255,75,0,0.05) 0%, transparent 60%),
-        var(--obsidian);
-    }
-
-    .hero-vertline {
-      position: absolute;
-      right: 180px;
-      top: 0; bottom: 0;
-      width: 1px;
-      background: linear-gradient(to bottom, transparent 0%, rgba(255,75,0,0.2) 40%, rgba(255,75,0,0.2) 60%, transparent 100%);
-    }
-
-    body.fa .hero-vertline { right: auto; left: 180px; }
-
-    .hero-inner {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-    }
-
-    .hero-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ignite);
-      margin-bottom: 32px;
-    }
-
-    .hero-label-line {
-      width: 36px;
-      height: 1px;
-      background: var(--ignite);
-    }
-
-    body.fa .hero-label-line:first-child { display: none; }
-
-    .hero-h1 {
-      font-size: clamp(56px, 9vw, 120px);
-      font-weight: 800;
-      line-height: 0.92;
-      letter-spacing: -2px;
-      margin-bottom: 36px;
-    }
-
-    .hero-h1 span { display: block; }
-    .orange { color: var(--ignite); }
-
-    .hero-desc {
-      font-size: 16px;
-      font-weight: 300;
-      color: var(--mist);
-      max-width: 480px;
-      line-height: 1.8;
-      margin-bottom: 52px;
-    }
-
-    .hero-btns {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .btn-primary {
-      padding: 16px 36px;
-      background: var(--ignite);
-      color: var(--white);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border-radius: 3px;
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-
-    .btn-primary:hover { opacity: 0.85; }
-
-    .btn-outline {
-      padding: 16px 36px;
-      color: var(--white);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border-radius: 3px;
-      border: 1px solid rgba(255,255,255,0.12);
-      text-decoration: none;
-      transition: border-color 0.2s;
-    }
-
-    .btn-outline:hover { border-color: rgba(255,255,255,0.3); }
-
-    .hero-stats {
-      position: absolute;
-      right: 0; bottom: 100px;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-    }
-
-    body.fa .hero-stats { right: auto; left: 0; }
-
-    .hero-stat-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 40px;
-      font-weight: 800;
-      line-height: 1;
-      color: var(--white);
-    }
-
-    body.fa .hero-stat-num { font-family: 'Vazirmatn', sans-serif; }
-    .hero-stat-num em { color: var(--ignite); font-style: normal; }
-
-    .hero-stat-lbl {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--mist);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-top: 4px;
-      text-align: right;
-    }
-
-    body.fa .hero-stat-lbl { text-align: left; }
-
-    @media (max-width: 900px) {
-      .hero-stats { display: none; }
-    }
-
-    /* ===== SHARED SECTION STYLES ===== */
-    section { padding: 130px 0; }
-
-    @media (max-width: 768px) { section { padding: 80px 0; } }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--ignite);
-      margin-bottom: 22px;
-    }
-
-    .eyebrow::after {
-      content: '';
-      display: block;
-      width: 28px;
-      height: 1px;
-      background: var(--ignite);
-    }
-
-    body.fa .eyebrow::after { display: none; }
-    body.fa .eyebrow::before {
-      content: '';
-      display: block;
-      width: 28px;
-      height: 1px;
-      background: var(--ignite);
-    }
-
-    .section-h2 {
-      font-size: clamp(32px, 5vw, 56px);
-      font-weight: 800;
-      color: var(--white);
-      line-height: 1.05;
-      margin-bottom: 24px;
-    }
-
-    .section-h2 em { color: var(--ignite); font-style: normal; }
-
-    .section-body {
-      font-size: 16px;
-      font-weight: 300;
-      color: var(--mist);
-      line-height: 1.8;
-      max-width: 520px;
-    }
-
-    /* ===== PROBLEM ===== */
-    .problem {
-      background: var(--dark2);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .problem-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 100px;
-      align-items: center;
-    }
-
-    @media (max-width: 900px) {
-      .problem-grid { grid-template-columns: 1fr; gap: 60px; }
-    }
-
-    .problem-items {
-      margin-top: 44px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .problem-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;
-      padding: 20px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .problem-item:first-child { border-top: 1px solid var(--border); }
-
-    .prob-dash {
-      color: var(--ignite);
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 2px;
-      font-size: 18px;
-    }
-
-    .prob-text {
-      font-size: 15px;
-      color: #aaa;
-      line-height: 1.6;
-    }
-
-    .stats-card {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 52px 44px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stats-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 56px; height: 2px;
-      background: var(--ignite);
-    }
-
-    .big-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 88px;
-      font-weight: 800;
-      line-height: 1;
-      color: var(--white);
-    }
-
-    body.fa .big-num { font-family: 'Vazirmatn', sans-serif; }
-    .big-num em { color: var(--ignite); font-style: normal; }
-
-    .big-label {
-      font-size: 15px;
-      font-weight: 300;
-      color: var(--mist);
-      line-height: 1.65;
-      margin-top: 10px;
-      max-width: 280px;
-    }
-
-    .card-divider {
-      width: 48px;
-      height: 1px;
-      background: var(--border);
-      margin: 36px 0;
-    }
-
-    /* ===== SERVICES ===== */
-    .services-header {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      margin-bottom: 72px;
-      align-items: end;
-    }
-
-    @media (max-width: 768px) {
-      .services-header { grid-template-columns: 1fr; margin-bottom: 48px; }
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    @media (max-width: 900px) {
-      .services-grid { grid-template-columns: 1fr 1fr; }
-    }
-
-    @media (max-width: 600px) {
-      .services-grid { grid-template-columns: 1fr; }
-    }
-
-    .service-card {
-      background: var(--obsidian);
-      padding: 44px 36px;
-      position: relative;
-      overflow: hidden;
-      transition: background 0.25s;
-    }
-
-    .service-card:hover { background: #111117; }
-
-    .service-card::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--ignite);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
-    }
-
-    body.fa .service-card::after { transform-origin: right; }
-
-    .service-card:hover::after { transform: scaleX(1); }
-
-    .svc-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--ignite);
-      letter-spacing: 0.15em;
-      margin-bottom: 32px;
-      opacity: 0.7;
-    }
-
-    .svc-icon {
-      font-size: 26px;
-      margin-bottom: 18px;
-      display: block;
-    }
-
-    .svc-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 14px;
-      line-height: 1.25;
-      font-family: 'Syne', sans-serif;
-    }
-
-    body.fa .svc-title { font-family: 'Vazirmatn', sans-serif; }
-
-    .svc-desc {
-      font-size: 13.5px;
-      color: var(--mist);
-      line-height: 1.72;
-    }
-
-    /* ===== HOW IT WORKS ===== */
-    .how { background: var(--dark2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-
-    .how-top {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      margin-bottom: 88px;
-      align-items: end;
-    }
-
-    @media (max-width: 768px) {
-      .how-top { grid-template-columns: 1fr; margin-bottom: 56px; gap: 40px; }
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    @media (max-width: 700px) {
-      .steps { grid-template-columns: 1fr; }
-    }
-
-    .step {
-      background: var(--obsidian);
-      padding: 48px 36px;
-    }
-
-    .step-badge {
-      width: 48px;
-      height: 48px;
-      border: 1px solid rgba(255,75,0,0.3);
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Syne', sans-serif;
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--ignite);
-      margin-bottom: 32px;
-    }
-
-    .step-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 14px;
-    }
-
-    body.fa .step-title { font-family: 'Vazirmatn', sans-serif; }
-
-    .step-desc {
-      font-size: 14px;
-      color: var(--mist);
-      line-height: 1.72;
-    }
-
-    /* ===== WHY IKONIQ ===== */
-    .why-layout {
-      display: grid;
-      grid-template-columns: 1.3fr 0.7fr;
-      gap: 80px;
-    }
-
-    @media (max-width: 900px) {
-      .why-layout { grid-template-columns: 1fr; }
-    }
-
-    .reasons {
-      margin-top: 52px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .reason {
-      display: grid;
-      grid-template-columns: 44px 1fr;
-      gap: 20px;
-      padding: 28px 0;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.2s;
-    }
-
-    .reason:first-child { border-top: 1px solid var(--border); }
-
-    .reason-n {
-      font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--ignite);
-      opacity: 0.6;
-      padding-top: 4px;
-    }
-
-    .reason-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 8px;
-      font-family: 'Syne', sans-serif;
-    }
-
-    body.fa .reason-title { font-family: 'Vazirmatn', sans-serif; }
-
-    .reason-text {
-      font-size: 13.5px;
-      color: var(--mist);
-      line-height: 1.72;
-    }
-
-    .exclusive-panel {
-      background: var(--dark3);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 48px 40px;
-      position: sticky;
-      top: 110px;
-    }
-
-    .exclusive-bar {
-      width: 40px;
-      height: 3px;
-      background: var(--ignite);
-      margin-bottom: 32px;
-    }
-
-    .exclusive-h {
-      font-family: 'Syne', sans-serif;
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--white);
-      line-height: 1.15;
-      margin-bottom: 18px;
-    }
-
-    body.fa .exclusive-h { font-family: 'Vazirmatn', sans-serif; }
-
-    .exclusive-p {
-      font-size: 14px;
-      color: var(--mist);
-      line-height: 1.75;
-      margin-bottom: 36px;
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 8px 18px;
-      background: rgba(255,75,0,0.08);
-      border: 1px solid rgba(255,75,0,0.2);
-      border-radius: 40px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--ignite);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 32px;
-    }
-
-    .contact-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .contact-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 13px;
-      color: var(--mist);
-    }
-
-    .contact-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--ignite);
-      flex-shrink: 0;
-    }
-
-    .contact-row a {
-      color: var(--white);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .contact-row a:hover { color: var(--ignite); }
-
-    /* ===== CTA ===== */
-    .cta-band {
-      background: var(--ignite);
-      padding: 110px 0;
-    }
-
-    .cta-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-
-    .cta-h {
-      font-size: clamp(36px, 5vw, 64px);
-      font-weight: 800;
-      color: var(--white);
-      line-height: 0.95;
-    }
-
-    .cta-sub {
-      font-size: 16px;
-      color: rgba(255,255,255,0.65);
-      margin-top: 18px;
-      max-width: 460px;
-      line-height: 1.65;
-    }
-
-    .btn-dark {
-      padding: 20px 44px;
-      background: var(--obsidian);
-      color: var(--white);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border-radius: 3px;
-      text-decoration: none;
-      white-space: nowrap;
-      flex-shrink: 0;
-      transition: opacity 0.2s;
-    }
-
-    .btn-dark:hover { opacity: 0.8; }
-
-    /* ===== FOOTER ===== */
-    footer {
-      background: var(--obsidian);
-      border-top: 1px solid var(--border);
-      padding: 64px 0;
-    }
-
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-
-    .footer-logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 18px;
-      letter-spacing: 5px;
-      color: var(--white);
-    }
-
-    .footer-logo em { color: var(--ignite); font-style: normal; }
-
-    .footer-slogan {
-      font-size: 11px;
-      color: #333;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-top: 8px;
-    }
-
-    .footer-nav {
-      display: flex;
-      gap: 28px;
-    }
-
-    .footer-nav a {
-      font-size: 12px;
-      color: var(--mist);
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      transition: color 0.2s;
-    }
-
-    .footer-nav a:hover { color: var(--white); }
-
-    .footer-bottom {
-      margin-top: 52px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .footer-copy {
-      font-size: 12px;
-      color: #2e2e35;
-    }
-
-    .footer-domain {
-      font-size: 12px;
-      color: #2e2e35;
-      font-family: monospace;
-    }
-
-    /* ===== ANIMATIONS ===== */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-
-    .fade-up.in { opacity: 1; transform: translateY(0); }
-    .d1 { transition-delay: 0.1s; }
-    .d2 { transition-delay: 0.2s; }
-    .d3 { transition-delay: 0.3s; }
-    .d4 { transition-delay: 0.4s; }
-
-    /* ===== SCROLLBAR ===== */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--obsidian); }
-    ::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKONIQ — AI Platform for Gyms & Health Clubs in Iran</title>
+<meta name="description" content="IKONIQ is Iran's most advanced AI platform for gyms and health clubs. Member retention AI, lead automation, AI training plans, nutrition guidance. Live in 72 hours, zero technical setup.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://beikoniq.com">
+<meta property="og:title" content="IKONIQ — AI Platform for Gyms in Iran">
+<meta property="og:description" content="Six AI systems for Iran's health clubs. Live in 72 hours. Zero setup from your side.">
+<meta property="og:url" content="https://beikoniq.com">
+<meta property="og:type" content="website">
+<meta name="geo.region" content="IR">
+<link rel="alternate" type="text/plain" href="https://beikoniq.com/llms.txt">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://beikoniq.com/#org","name":"IKONIQ","url":"https://beikoniq.com","description":"Iran most advanced AI platform for gyms health clubs and wellness businesses","contactPoint":{"@type":"ContactPoint","url":"https://t.me/beikoniq","email":"hello@beikoniq.com","availableLanguage":["English","Persian"]},"sameAs":["https://t.me/beikoniq"],"areaServed":{"@type":"Country","name":"Iran"},"employee":[{"@type":"Person","name":"Mehdi Pirooznia","jobTitle":"Co-founder Strategy and Growth"},{"@type":"Person","name":"Sina Pirooznia","jobTitle":"Co-founder Technology"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is IKONIQ?","acceptedAnswer":{"@type":"Answer","text":"IKONIQ is Iran most advanced AI platform for gyms health clubs and wellness businesses. It provides six AI systems through Telegram: lead capture, member retention, AI training plans, nutrition guidance, business intelligence, and a 24/7 AI club assistant."}},{"@type":"Question","name":"How long does IKONIQ take to set up?","acceptedAnswer":{"@type":"Answer","text":"72 hours from onboarding to fully live. IKONIQ technical team handles 100 percent of setup. No IT knowledge required."}},{"@type":"Question","name":"How does IKONIQ reduce member churn?","acceptedAnswer":{"@type":"Answer","text":"By monitoring every member attendance in real time and automatically sending personalized re-engagement messages via Telegram when attendance drops. Average churn reduction 80 percent within 60 days."}},{"@type":"Question","name":"Does IKONIQ work with Telegram?","acceptedAnswer":{"@type":"Answer","text":"Yes natively. All six AI systems operate through Telegram. No new apps required for members."}},{"@type":"Question","name":"Is IKONIQ available in Farsi?","acceptedAnswer":{"@type":"Answer","text":"Yes. IKONIQ is built natively for the Iranian market with full Farsi support."}},{"@type":"Question","name":"What does IKONIQ cost?","acceptedAnswer":{"@type":"Answer","text":"Pricing is customized per club. Contact via Telegram at beikoniq for a free 30-minute strategy session."}},{"@type":"Question","name":"Who founded IKONIQ?","acceptedAnswer":{"@type":"Answer","text":"IKONIQ was co-founded by Mehdi Pirooznia who leads strategy and Sina Pirooznia who leads technology. Both are based in Tehran Iran."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to get IKONIQ live for your gym","totalTime":"PT72H","step":[{"@type":"HowToStep","name":"Connect","text":"IKONIQ team integrates with your Telegram and Instagram. Zero technical work from your side."},{"@type":"HowToStep","name":"Automate","text":"All six AI systems activate within 72 hours."},{"@type":"HowToStep","name":"Grow","text":"Track revenue retention and leads on your live dashboard."}]}</script>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+<link href="https://fonts.bunny.net/css?family=syne:700,800|dm-sans:300,400,500&display=swap" rel="stylesheet">
+<style>
+:root{--bk:#07070A;--ob:#0D0D12;--d1:#111116;--d2:#16161C;--d3:#22222A;--fi:#FF4B00;--filo:rgba(255,75,0,.10);--fibd:rgba(255,75,0,.22);--wh:#fff;--g1:#8A8A96;--g2:#52525E;--g3:#252530;--bd:rgba(255,255,255,.06);--bd2:rgba(255,255,255,.11);--e:cubic-bezier(.16,1,.3,1);--fh:"Syne",-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;--fb:"DM Sans",-apple-system,BlinkMacSystemFont,system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bk);color:var(--wh);font-family:var(--fb);font-size:15px;font-weight:400;line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+::selection{background:rgba(255,75,0,.2);color:var(--wh)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bk)}::-webkit-scrollbar-thumb{background:var(--d3);border-radius:2px}
+body::after{content:"";position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.03;pointer-events:none;z-index:9999}
+h1,h2,h3{font-family:var(--fh);font-weight:800;line-height:1;letter-spacing:-.03em}
+.fi{color:var(--fi)}
+.w{max-width:1160px;margin:0 auto;padding:0 44px}
+@media(max-width:640px){.w{padding:0 20px}}
+.sec{padding:96px 0}
+@media(max-width:768px){.sec{padding:64px 0}}
+.lbl{display:inline-flex;align-items:center;gap:9px;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--fi);margin-bottom:14px}
+.lbl::before{content:"";width:18px;height:1px;background:var(--fi)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--fb);font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:13px 26px;border-radius:3px;transition:all .2s var(--e);white-space:nowrap;cursor:pointer;text-decoration:none}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+.btn-fi{background:var(--fi);color:var(--wh)}.btn-fi:hover{background:#f03d00;transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,75,0,.3)}
+.btn-gh{color:var(--wh);border:1px solid var(--bd2)}.btn-gh:hover{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.04)}
+.btn-dk{background:var(--bk);color:var(--wh);padding:15px 32px;font-size:13px}.btn-dk:hover{background:var(--d1);transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,0,0,.4)}
+.btn-lg{padding:15px 32px;font-size:13px}
+
+/* ══ CRITICAL: pages use display only — ZERO opacity on content ══ */
+.page{display:none}
+.page.active{display:block;animation:pfade .2s ease}
+@keyframes pfade{from{opacity:.8}to{opacity:1}}
+
+/* NAV */
+#nav{position:fixed;inset-block-start:0;inset-inline:0;z-index:900;padding:22px 0;transition:all .3s var(--e);border-bottom:1px solid transparent}
+#nav.sc{padding:13px 0;background:rgba(7,7,10,.93);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom-color:var(--bd)}
+.navi{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-family:var(--fh);font-size:16px;letter-spacing:.26em;cursor:pointer;font-weight:800}
+.logo em{color:var(--fi);font-style:normal}
+.navul{display:flex;gap:26px;list-style:none}
+.navul a{font-size:11.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--g1);transition:color .2s;cursor:pointer;padding-bottom:2px}
+.navul a:hover,.navul a.cur{color:var(--wh)}.navul a.cur{border-bottom:1px solid var(--fi)}
+.navr{display:flex;align-items:center;gap:12px}
+.burger{display:none;flex-direction:column;gap:5px;padding:4px}
+.burger span{display:block;width:20px;height:1.5px;background:var(--wh);transition:all .28s var(--e)}
+.burger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+@media(max-width:860px){.navul,.navbtn{display:none}.burger{display:flex}}
+.mob{position:fixed;inset:0;background:var(--bk);z-index:850;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0;pointer-events:none;transition:opacity .28s var(--e)}
+.mob.open{opacity:1;pointer-events:all}
+.mob a{font-family:var(--fh);font-size:clamp(28px,6vw,40px);font-weight:800;color:var(--g2);padding:7px 0;transition:color .2s;cursor:pointer}
+.mob a:hover{color:var(--wh)}.mobsep{width:1px;height:32px;background:var(--bd);margin:8px 0}
+
+/* HERO */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;padding-top:110px;padding-bottom:72px;overflow:hidden}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 65% 55% at 78% 18%,rgba(255,75,0,.13) 0%,transparent 65%),radial-gradient(ellipse 35% 35% at 14% 82%,rgba(255,75,0,.06) 0%,transparent 60%),var(--bk)}
+.hdots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,black 0%,transparent 100%);pointer-events:none}
+.hvl{position:absolute;right:18%;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent 5%,rgba(255,75,0,.12) 28%,rgba(255,75,0,.12) 72%,transparent 95%)}
+@media(max-width:860px){.hvl{display:none}}
+.hbody{position:relative;z-index:2;width:100%}
+.hbadge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:var(--filo);border:1px solid var(--fibd);border-radius:40px;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--fi);margin-bottom:26px}
+.hbadge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--fi);animation:pulse 2.2s ease infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+.hero h1{font-size:clamp(46px,5vw,72px);line-height:.92;letter-spacing:-.04em;max-width:700px;margin-bottom:24px}
+.hdesc{font-size:16px;font-weight:300;color:var(--g1);max-width:440px;line-height:1.78;margin-bottom:36px}
+.hbtns{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:52px}
+.hstats{display:flex;gap:44px;flex-wrap:wrap;padding-top:32px;border-top:1px solid var(--bd)}
+.hsv{font-family:var(--fh);font-size:34px;font-weight:800;line-height:1;letter-spacing:-.03em}
+.hsv em{color:var(--fi);font-style:normal}
+.hsl{font-size:10.5px;font-weight:500;color:var(--g2);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+
+/* URGENCY STRIP */
+.urg{background:var(--fi);padding:13px 0}
+.urgi{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
+.urgi span{font-size:13px;font-weight:500;color:var(--wh);opacity:.92}.urgi strong{font-weight:700}
+.urgsep{width:1px;height:16px;background:rgba(255,255,255,.3)}
+@media(max-width:640px){.urgsep{display:none}}
+
+/* PROOF BAR */
+.proof{background:var(--d1);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:0}
+.proofg{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd)}
+@media(max-width:640px){.proofg{grid-template-columns:repeat(2,1fr)}}
+.proofc{background:var(--d1);padding:40px 24px;text-align:center}
+.proofn{font-family:var(--fh);font-size:44px;font-weight:800;line-height:1;letter-spacing:-.03em;color:var(--wh);margin-bottom:7px}
+.proofn em{color:var(--fi);font-style:normal}
+.proofl{font-size:11px;font-weight:500;color:var(--g1);text-transform:uppercase;letter-spacing:.1em}
+
+/* 2-COL GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+@media(max-width:860px){.g2{grid-template-columns:1fr;gap:44px}}
+.g2 h2{font-size:clamp(28px,3.3vw,46px);margin-bottom:26px;line-height:1.05}
+.plist{list-style:none}
+.plist li{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--bd);font-size:15px;color:var(--g1);line-height:1.65}
+.plist li:first-child{border-top:1px solid var(--bd)}.plist li::before{content:"—";color:var(--fi);font-weight:700;flex-shrink:0;margin-top:1px}
+.statcard{background:var(--d2);border:1px solid var(--bd);border-radius:6px;padding:42px 38px;position:sticky;top:96px;overflow:hidden}
+.statcard::after{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--fi) 0%,transparent 100%)}
+.big{font-family:var(--fh);font-size:80px;font-weight:800;line-height:1;letter-spacing:-.05em;margin-bottom:10px}
+.big em{color:var(--fi);font-style:normal}
+.bigtxt{font-size:14px;font-weight:300;color:var(--g1);line-height:1.72;max-width:260px}
+.bigdiv{width:36px;height:1px;background:var(--bd);margin:26px 0}
+
+/* COMPARISON TABLE */
+.compsec{background:var(--d1);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.compt{width:100%;border-collapse:collapse;margin-top:44px}
+.compt th{text-align:left;padding:13px 20px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border-bottom:2px solid var(--bd)}
+.compt th:first-child{color:var(--g1)}.compt th:nth-child(2){color:var(--g2)}.compt th:nth-child(3){color:var(--fi)}
+.compt td{padding:14px 20px;font-size:14px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.compt td:first-child{color:var(--wh);font-weight:500}.compt td:nth-child(2){color:var(--g2)}.compt td:nth-child(3){color:var(--wh)}
+.compt tr:last-child td{border-bottom:none}
+.yes{color:#28C840;font-weight:700}.no{color:var(--g3);font-weight:700}
+
+/* RESULTS */
+.ress{background:var(--ob);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.resg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:44px}
+@media(max-width:640px){.resg{grid-template-columns:1fr}}
+.resc{background:var(--ob);padding:40px 32px}
+.resn{font-family:var(--fh);font-size:52px;font-weight:800;line-height:1;letter-spacing:-.04em;color:var(--fi);margin-bottom:10px}
+.rest{font-family:var(--fh);font-size:17px;font-weight:700;color:var(--wh);margin-bottom:8px;letter-spacing:-.01em}
+.resd{font-size:13px;font-weight:300;color:var(--g1);line-height:1.7}
+
+/* SERVICES LIST (HOME) */
+.svclist{display:flex;flex-direction:column}
+.svcrow{display:grid;grid-template-columns:36px 1fr auto auto;align-items:center;gap:24px;padding:20px 0;border-bottom:1px solid var(--bd);cursor:pointer;transition:padding-left .2s var(--e),background .2s;position:relative}
+.svcrow::before{content:"";position:absolute;left:-44px;top:0;bottom:0;width:2px;background:var(--fi);transform:scaleY(0);transition:transform .25s var(--e)}
+.svcrow:hover{padding-left:6px}.svcrow:hover::before{transform:scaleY(1)}
+.svcrow:hover .sn{color:var(--fi)}.svcrow:hover .sarr{transform:translateX(4px);color:var(--fi)}.svcrow:hover .stag{border-color:var(--fibd);color:var(--fi)}
+.sn{font-size:11px;font-weight:700;color:var(--g2);letter-spacing:.12em;transition:color .2s}
+.si{display:flex;flex-direction:column;gap:3px}
+.snm{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--wh);letter-spacing:-.01em}
+.sds{font-size:13px;color:var(--g1);font-weight:300}
+.stag{font-size:10.5px;font-weight:600;color:var(--g2);padding:4px 12px;border:1px solid var(--bd);border-radius:40px;letter-spacing:.05em;text-transform:uppercase;transition:all .2s;white-space:nowrap}
+.sarr{color:var(--g2);font-size:18px;transition:all .2s}
+@media(max-width:640px){.svcrow{grid-template-columns:28px 1fr}.stag,.sarr{display:none}}
+
+/* STEPS */
+.prochd{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:end;margin-bottom:52px}
+@media(max-width:640px){.prochd{grid-template-columns:1fr;gap:14px}}
+.prochd h2{font-size:clamp(28px,3.3vw,46px)}
+.stepg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd)}
+@media(max-width:640px){.stepg{grid-template-columns:1fr}}
+.stepc{background:var(--bk);padding:44px 36px;transition:background .22s}.stepc:hover{background:var(--d1)}
+.stepn{font-family:var(--fh);font-size:60px;color:var(--d3);margin-bottom:22px;transition:color .28s}.stepc:hover .stepn{color:var(--fi)}
+.stepc h3{font-family:var(--fh);font-size:20px;margin-bottom:10px;letter-spacing:-.01em}
+.stepc p{font-size:13px;font-weight:300;color:var(--g1);line-height:1.75}
+
+/* WHY GRID */
+.whyg{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:44px}
+@media(max-width:860px){.whyg{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.whyg{grid-template-columns:1fr}}
+.whyc{background:var(--d1);padding:34px 28px;transition:background .2s}.whyc:hover{background:var(--d2)}
+.wcn{font-size:11px;font-weight:700;color:var(--fi);opacity:.45;letter-spacing:.15em;margin-bottom:11px}
+.whyc h3{font-family:var(--fh);font-size:16px;font-weight:700;margin-bottom:7px;letter-spacing:-.01em}
+.whyc p{font-size:13px;font-weight:300;color:var(--g1);line-height:1.7}
+
+/* TESTIMONIALS */
+.testig{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:44px}
+@media(max-width:640px){.testig{grid-template-columns:1fr}}
+.testic{background:var(--ob);padding:36px 30px;position:relative;overflow:hidden}
+.testic::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--fi) 0%,transparent 100%)}
+.tnum{font-family:var(--fh);font-size:40px;font-weight:800;color:var(--fi);margin-bottom:5px}
+.tlbl{font-size:11px;color:var(--g2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:18px}
+.tq{font-size:14px;font-weight:300;color:var(--g1);line-height:1.75;font-style:italic;margin-bottom:18px}
+.tname{font-size:13px;font-weight:600;color:var(--wh)}.trole{font-size:11px;color:var(--g2);margin-top:3px}
+
+/* FAQ */
+details{border-top:1px solid var(--bd)}details:last-child{border-bottom:1px solid var(--bd)}
+summary{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:20px 0;font-size:15.5px;font-weight:500;color:var(--wh);cursor:pointer;list-style:none;transition:color .2s}
+summary::-webkit-details-marker{display:none}summary:hover,details[open] summary{color:var(--fi)}
+.fqi{width:22px;height:22px;border-radius:50%;border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:var(--g1);transition:all .2s}
+details[open] .fqi{background:var(--filo);border-color:var(--fibd);color:var(--fi)}
+.fqa{padding-bottom:22px;font-size:15px;font-weight:300;color:var(--g1);line-height:1.78;max-width:620px}.fqa a{color:var(--fi)}
+
+/* CTA BAND */
+.cta{background:var(--fi);padding:96px 0;position:relative;overflow:hidden}
+.cta::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.07) 1px,transparent 1px);background-size:24px 24px}
+.ctai{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:40px;flex-wrap:wrap}
+.cta h2{font-size:clamp(28px,4vw,58px);color:var(--wh);margin-bottom:12px;line-height:.98}
+.cta p{font-size:15px;font-weight:300;color:rgba(255,255,255,.62);line-height:1.7;max-width:400px}
+
+/* INNER PAGE HERO */
+.pghero{padding:148px 0 68px;border-bottom:1px solid var(--bd);background:var(--ob);position:relative;overflow:hidden}
+.pgbg{position:absolute;inset:0;background:radial-gradient(ellipse 55% 75% at 90% 30%,rgba(255,75,0,.09) 0%,transparent 65%);pointer-events:none}
+.pghero h1{font-size:clamp(28px,3.4vw,50px);line-height:1.05;margin-bottom:16px}
+.pgp{font-size:16px;font-weight:300;color:var(--g1);max-width:500px;line-height:1.78;margin-bottom:24px}
+
+/* SERVICES PAGE */
+.sjump{background:var(--d1);border-bottom:1px solid var(--bd);padding:18px 0}
+.sjumpi{display:flex;gap:9px;flex-wrap:wrap}
+.sji{font-size:12px;font-weight:500;color:var(--g1);padding:6px 13px;border:1px solid var(--bd);border-radius:40px;cursor:pointer;transition:all .2s}.sji:hover{border-color:var(--fibd);color:var(--fi)}
+.sb{padding:80px 0;border-bottom:1px solid var(--bd);scroll-margin-top:76px}
+.sb:nth-child(even){background:var(--d1)}
+.sbl{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+@media(max-width:860px){.sbl{grid-template-columns:1fr;gap:40px}}
+.sbn{font-size:11px;font-weight:700;color:var(--fi);letter-spacing:.2em;opacity:.55;margin-bottom:12px}
+.sbh{font-size:clamp(24px,2.8vw,38px);font-weight:800;font-family:var(--fh);letter-spacing:-.03em;margin-bottom:12px;line-height:1.05}
+.sbtg{font-size:15px;font-weight:300;color:var(--g1);line-height:1.75;margin-bottom:24px}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:4px;overflow:hidden;margin-bottom:22px}
+.bac{background:var(--d2);padding:20px 18px}
+.bal{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+.bac:first-child .bal{color:var(--g2)}.bac:last-child{border-left:1px solid var(--bd)}.bac:last-child .bal{color:var(--fi)}
+.bat{font-size:13px;color:var(--g1);line-height:1.65}.bac:last-child .bat{color:var(--wh)}
+.bens{list-style:none;display:flex;flex-direction:column;gap:9px}
+.bens li{display:flex;align-items:flex-start;gap:11px;font-size:13px;color:var(--g1);line-height:1.6}
+.bens li::before{content:"✓";color:var(--fi);font-weight:700;flex-shrink:0;margin-top:1px}
+.chtags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.chtag{display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:40px;font-size:11px;color:var(--g1)}
+.chd{width:5px;height:5px;border-radius:50%;background:var(--fi);flex-shrink:0}
+.vp{background:var(--ob);border:1px solid var(--bd);border-radius:8px;padding:24px;position:sticky;top:96px}
+.vphd{display:flex;align-items:center;gap:7px;margin-bottom:18px;padding-bottom:13px;border-bottom:1px solid var(--bd)}
+.vd{width:8px;height:8px;border-radius:50%}.vd:nth-child(1){background:#FF5F57}.vd:nth-child(2){background:#FEBC2E}.vd:nth-child(3){background:#28C840}
+.vtt{font-size:11px;font-weight:500;color:var(--g2);margin-left:auto;font-family:monospace}
+.vr{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bd);font-size:13px}.vr:last-child{border-bottom:none}
+.vrl{color:var(--g1)}.vrv{font-weight:600;color:var(--wh)}
+.bgfi{font-size:10px;padding:2px 8px;border-radius:40px;font-weight:600;background:var(--filo);color:var(--fi);border:1px solid var(--fibd)}
+.bggr{font-size:10px;padding:2px 8px;border-radius:40px;font-weight:600;background:rgba(40,200,64,.1);color:#28C840;border:1px solid rgba(40,200,64,.2)}
+.bggy{font-size:10px;padding:2px 8px;border-radius:40px;font-weight:600;background:rgba(255,255,255,.05);color:var(--g1);border:1px solid var(--bd)}
+.vbar{height:6px;background:var(--d3);border-radius:3px;margin:14px 0 5px;overflow:hidden}
+.vbarf{height:100%;border-radius:3px;background:var(--fi)}.vbarl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--g2)}
+.metc{background:var(--d2);border:1px solid var(--bd);border-radius:6px;padding:22px 20px;margin-top:16px;display:flex;align-items:center;gap:16px}
+.metv{font-family:var(--fh);font-size:46px;font-weight:800;line-height:1;letter-spacing:-.04em;color:var(--wh);flex-shrink:0}
+.metv em{color:var(--fi);font-style:normal}.mett{font-size:13px;color:var(--g1);line-height:1.6}
+
+/* ABOUT PAGE */
+.storyg{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+@media(max-width:860px){.storyg{grid-template-columns:1fr;gap:44px}}
+.storyg h2{font-size:clamp(28px,3.3vw,46px);margin-bottom:22px;line-height:1.05}
+.storyg p{font-size:15.5px;font-weight:300;color:var(--g1);line-height:1.8;margin-bottom:14px}.storyg p:last-child{margin-bottom:0}
+.scard{background:var(--d2);border:1px solid var(--bd);border-radius:6px;padding:30px 26px;overflow:hidden;position:relative;margin-bottom:14px}.scard:last-child{margin-bottom:0}
+.scard::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--fi) 0%,transparent 100%)}
+.sclbl{font-size:11px;font-weight:700;color:var(--fi);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;opacity:.7}
+.scard h3{font-family:var(--fh);font-size:20px;margin-bottom:10px;letter-spacing:-.02em}
+.scard p{font-size:13.5px;font-weight:300;color:var(--g1);line-height:1.75}
+.valsg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-top:44px}
+@media(max-width:640px){.valsg{grid-template-columns:1fr}}
+.vc{background:var(--d1);padding:32px 28px;transition:background .2s}.vc:hover{background:var(--d2)}
+.vcn{font-size:11px;font-weight:700;color:var(--fi);opacity:.45;letter-spacing:.15em;margin-bottom:11px}
+.vc h3{font-family:var(--fh);font-size:17px;font-weight:700;margin-bottom:7px;letter-spacing:-.01em}.vc p{font-size:13px;font-weight:300;color:var(--g1);line-height:1.7}
+.teamg{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:44px}
+@media(max-width:640px){.teamg{grid-template-columns:1fr}}
+.teamc{background:var(--d2);border:1px solid var(--bd);border-radius:6px;padding:30px 26px;position:relative;overflow:hidden}
+.teamc::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--fi) 0%,transparent 100%)}
+.tr{font-size:11px;font-weight:700;color:var(--fi);letter-spacing:.15em;text-transform:uppercase;margin-bottom:11px;opacity:.7}
+.tnm{font-family:var(--fh);font-size:24px;font-weight:800;margin-bottom:14px;letter-spacing:-.02em}
+.tds{font-size:13px;font-weight:300;color:var(--g1);line-height:1.75;margin-bottom:18px}
+.tsk{display:flex;gap:6px;flex-wrap:wrap}.tsk span{font-size:10.5px;padding:3px 10px;border:1px solid var(--bd);border-radius:40px;color:var(--g1)}
+.apprl{display:flex;flex-direction:column}
+.appri{display:grid;grid-template-columns:42px 1fr;gap:16px;padding:22px 0;border-bottom:1px solid var(--bd)}.appri:first-child{border-top:1px solid var(--bd)}
+.apn{font-size:11px;font-weight:700;color:var(--fi);opacity:.45;padding-top:2px}
+.appri h3{font-family:var(--fh);font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:-.01em}.appri p{font-size:13px;font-weight:300;color:var(--g1);line-height:1.7}
+.partnb{background:var(--d2);border:1px solid var(--bd);border-radius:6px;padding:34px 30px;position:relative;overflow:hidden;margin-top:36px;max-width:680px}
+.partnb::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--fi) 0%,transparent 100%)}
+.partnb h3{font-family:var(--fh);font-size:20px;font-weight:700;margin-bottom:10px;letter-spacing:-.01em}
+.partnb p{font-size:13px;font-weight:300;color:var(--g1);line-height:1.72;margin-bottom:10px}.partnb p:last-child{margin-bottom:0}
+
+/* CONTACT PAGE */
+.ctl{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;padding:80px 0 96px}
+@media(max-width:860px){.ctl{grid-template-columns:1fr;gap:52px}}
+.ctleft h2{font-size:clamp(28px,3.3vw,46px);margin-bottom:16px;line-height:1.05}
+.ctleft>p{font-size:15.5px;font-weight:300;color:var(--g1);line-height:1.78;margin-bottom:36px}
+.cm{display:flex;align-items:flex-start;gap:16px;padding:20px 0;border-bottom:1px solid var(--bd)}.cm:first-of-type{border-top:1px solid var(--bd)}
+.cmi{width:40px;height:40px;background:var(--filo);border:1px solid var(--fibd);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.cml{font-size:11px;font-weight:700;color:var(--fi);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;opacity:.7}
+.cmv{font-size:17px;font-weight:600;color:var(--wh);margin-bottom:3px}.cmv a{color:var(--wh);transition:color .2s}.cmv a:hover{color:var(--fi)}
+.cmn{font-size:13px;color:var(--g1)}
+.ctcard{background:var(--d2);border:1px solid var(--bd);border-radius:8px;padding:38px 34px;position:sticky;top:96px;overflow:hidden}
+.ctcard::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--fi) 0%,transparent 100%)}
+.cttag{display:inline-block;padding:4px 12px;background:var(--filo);border:1px solid var(--fibd);border-radius:40px;font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--fi);margin-bottom:16px}
+.ctcard h3{font-family:var(--fh);font-size:22px;font-weight:800;margin-bottom:11px;line-height:1.15}
+.ctcard>p{font-size:13px;font-weight:300;color:var(--g1);line-height:1.72;margin-bottom:22px}
+.sesl{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.sesi{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--g1)}.sesi::before{content:"✓";color:var(--fi);font-weight:700;flex-shrink:0}
+.tgbtn{display:flex;align-items:center;gap:9px;width:100%;padding:13px 18px;background:var(--fi);color:var(--wh);border-radius:3px;font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;margin-bottom:14px;transition:background .2s;text-decoration:none;font-family:var(--fb)}
+.tgbtn:hover{background:#f03d00}.tgbtn svg{width:15px;height:15px;flex-shrink:0}
+
+/* FOOTER */
+footer{background:var(--ob);border-top:1px solid var(--bd);padding:52px 0 36px}
+.ftt{display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap;margin-bottom:40px}
+.ftl{font-family:var(--fh);font-size:15px;letter-spacing:.26em;cursor:pointer;font-weight:800}.ftl em{color:var(--fi);font-style:normal}
+.fttag{font-size:10.5px;color:var(--g3);text-transform:uppercase;letter-spacing:.12em;margin-top:6px}
+.ftnav{display:flex;gap:22px;flex-wrap:wrap}
+.ftnav a{font-size:11.5px;font-weight:500;color:var(--g2);text-transform:uppercase;letter-spacing:.08em;transition:color .2s;cursor:pointer}.ftnav a:hover{color:var(--wh)}
+.ftb{padding-top:22px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.ftcopy{font-size:12px;color:var(--g3)}.ftdom{font-family:monospace;font-size:12px;color:var(--g3)}
+</style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav id="main-nav">
-  <div class="container">
-    <div class="nav-inner">
-      <a href="#" class="logo">IKON<em>IQ</em></a>
-      <div class="nav-center">
-        <a href="#services" data-en="Services" data-fa="خدمات">Services</a>
-        <a href="#how" data-en="How It Works" data-fa="چطور کار می‌کند">How It Works</a>
-        <a href="#why" data-en="Why IKONIQ" data-fa="چرا IKONIQ">Why IKONIQ</a>
-        <a href="#contact" data-en="Contact" data-fa="تماس">Contact</a>
-      </div>
-      <div class="nav-right">
-        <div class="lang-toggle">
-          <button class="lang-btn active" onclick="setLang('en')">EN</button>
-          <button class="lang-btn" onclick="setLang('fa')">FA</button>
-        </div>
-        <a href="#contact" class="nav-cta" data-en="Get Started" data-fa="شروع کنید">Get Started</a>
+<!-- Mobile Menu -->
+<div class="mob" id="mob">
+  <a onclick="go('home');cm()">Home</a>
+  <a onclick="go('services');cm()">Services</a>
+  <a onclick="go('about');cm()">About</a>
+  <a onclick="go('contact');cm()">Contact</a>
+  <div class="mobsep"></div>
+  <a href="https://t.me/beikoniq" target="_blank" rel="noopener">@beikoniq →</a>
+</div>
+
+<!-- Nav -->
+<nav id="nav" aria-label="Main navigation">
+  <div class="w">
+    <div class="navi">
+      <span class="logo" onclick="go('home')">IKON<em>IQ</em></span>
+      <ul class="navul">
+        <li><a onclick="go('home')" id="nl-home" class="cur">Home</a></li>
+        <li><a onclick="go('services')" id="nl-services">Services</a></li>
+        <li><a onclick="go('about')" id="nl-about">About</a></li>
+        <li><a onclick="go('contact')" id="nl-contact">Contact</a></li>
+      </ul>
+      <div class="navr">
+        <a href="https://t.me/beikoniq" target="_blank" rel="noopener" class="btn btn-fi navbtn">Let's Talk</a>
+        <button class="burger" id="burger" onclick="tm()" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
       </div>
     </div>
   </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero" id="home">
-  <div class="hero-bg"></div>
-  <div class="hero-vertline"></div>
-  <div class="container hero-inner">
-    <div class="hero-label fade-up">
-      <span class="hero-label-line"></span>
-      <span data-en="AI Health Platform — Iran" data-fa="پلتفرم هوش مصنوعی سلامت — ایران">AI Health Platform — Iran</span>
+<!-- ═══ HOME ═══════════════════════════════════ -->
+<div id="page-home" class="page active">
+<section class="hero" aria-labelledby="h1">
+  <div class="hbg"></div><div class="hdots" aria-hidden="true"></div><div class="hvl" aria-hidden="true"></div>
+  <div class="w hbody">
+    <div class="hbadge">AI Health Platform — Iran</div>
+    <h1 id="h1">YOUR CLUB.<br><span class="fi">ELEVATED.</span></h1>
+    <p class="hdesc">Stop losing leads to gyms that replied faster. Stop losing members nobody noticed were leaving. IKONIQ gives you six AI systems that run your club while you focus on your members — live in 72 hours, zero technical setup.</p>
+    <div class="hbtns">
+      <a href="https://t.me/beikoniq" target="_blank" rel="noopener" class="btn btn-fi btn-lg">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 13.717l-2.95-.924c-.64-.203-.655-.64.136-.954l11.57-4.461c.537-.194 1.006.131.326.87z"/></svg>
+        Let's Talk
+      </a>
+      <span class="btn btn-gh btn-lg" onclick="go('services')">Explore Services</span>
     </div>
-    <h1 class="hero-h1 fade-up d1">
-      <span data-en="Your Health." data-fa=".سلامتی شما">Your Health.</span>
-      <span class="orange" data-en="Elevated." data-fa=".ارتقاء یافته">Elevated.</span>
-    </h1>
-    <p class="hero-desc fade-up d2"
-       data-en="IKONIQ is Iran's most advanced AI platform for gyms, health clubs, and wellness businesses. We automate growth, retain members, and deliver measurable results."
-       data-fa="IKONIQ پیشرفته‌ترین پلتفرم هوش مصنوعی ایران برای باشگاه‌ها، مراکز سلامت و کسب‌وکارهای سلامت است. رشد را خودکار می‌کنیم، اعضا را حفظ می‌کنیم و نتایج واقعی ارائه می‌دهیم.">
-      IKONIQ is Iran's most advanced AI platform for gyms, health clubs, and wellness businesses. We automate growth, retain members, and deliver measurable results.
-    </p>
-    <div class="hero-btns fade-up d3">
-      <a href="#contact" class="btn-primary" data-en="Book a Demo" data-fa="درخواست دمو">Book a Demo</a>
-      <a href="#services" class="btn-outline" data-en="See What We Do" data-fa="ببینید چه می‌کنیم">See What We Do</a>
-    </div>
-  </div>
-  <div class="hero-stats container">
-    <div class="hero-stat">
-      <div class="hero-stat-num">80<em>%</em></div>
-      <div class="hero-stat-lbl" data-en="Leads lost by avg club" data-fa="سرنخ از دست رفته">Leads lost by avg club</div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-stat-num">3<em>x</em></div>
-      <div class="hero-stat-lbl" data-en="Revenue uplift with AI" data-fa="افزایش درآمد با هوش مصنوعی">Revenue uplift with AI</div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-stat-num">24<em>/7</em></div>
-      <div class="hero-stat-lbl" data-en="AI running while you sleep" data-fa="هوش مصنوعی همیشه فعال">AI running while you sleep</div>
+    <div class="hstats">
+      <div><div class="hsv">80<em>%</em></div><div class="hsl">Leads lost per avg. club</div></div>
+      <div><div class="hsv">3<em>×</em></div><div class="hsl">Revenue uplift with AI</div></div>
+      <div><div class="hsv">72<em>h</em></div><div class="hsl">To go fully live</div></div>
     </div>
   </div>
 </section>
 
-<!-- PROBLEM -->
-<section class="problem" id="problem">
-  <div class="container">
-    <div class="problem-grid">
-      <div>
-        <div class="eyebrow" data-en="The Problem" data-fa="مشکل">The Problem</div>
-        <h2 class="section-h2"
-            data-en="Most clubs are losing revenue they don't even know about."
-            data-fa="اکثر باشگاه‌ها درآمدی را از دست می‌دهند که حتی نمی‌دانند.">
-          Most clubs are losing revenue they don't even know about.
-        </h2>
-        <div class="problem-items">
-          <div class="problem-item fade-up">
-            <span class="prob-dash">—</span>
-            <span class="prob-text" data-en="Leads arrive via Telegram and Instagram — and vanish with zero follow-up" data-fa="سرنخ‌ها از تلگرام و اینستاگرام می‌آیند و بدون هیچ پیگیری ناپدید می‌شوند">Leads arrive via Telegram and Instagram — and vanish with zero follow-up</span>
-          </div>
-          <div class="problem-item fade-up d1">
-            <span class="prob-dash">—</span>
-            <span class="prob-text" data-en="Members stop attending after 6 weeks. No one notices until renewal month" data-fa="اعضا بعد از ۶ هفته حضور را متوقف می‌کنند. هیچکس تا ماه تمدید متوجه نمی‌شود">Members stop attending after 6 weeks. No one notices until renewal month</span>
-          </div>
-          <div class="problem-item fade-up d2">
-            <span class="prob-dash">—</span>
-            <span class="prob-text" data-en="Memberships expire silently because no follow-up system exists" data-fa="اشتراک‌ها در سکوت منقضی می‌شوند چون هیچ سیستم پیگیری وجود ندارد">Memberships expire silently because no follow-up system exists</span>
-          </div>
-          <div class="problem-item fade-up d3">
-            <span class="prob-dash">—</span>
-            <span class="prob-text" data-en="Staff waste hours on tasks that AI can handle in seconds" data-fa="کارکنان ساعت‌ها صرف کارهایی می‌کنند که هوش مصنوعی در ثانیه‌ها انجام می‌دهد">Staff waste hours on tasks that AI can handle in seconds</span>
-          </div>
-          <div class="problem-item fade-up d4">
-            <span class="prob-dash">—</span>
-            <span class="prob-text" data-en="Owners have no real visibility into what's driving revenue or killing it" data-fa="مدیران هیچ دید واقعی از آنچه درآمد ایجاد می‌کند یا آن را از بین می‌برد ندارند">Owners have no real visibility into what's driving revenue or killing it</span>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="stats-card fade-up">
-          <div class="big-num">70<em>%</em></div>
-          <div class="big-label"
-               data-en="of gym leads never receive a single follow-up. That is revenue walking out before it ever walked in."
-               data-fa="از سرنخ‌های باشگاه هرگز یک پیام پیگیری دریافت نمی‌کنند. این درآمدی است که قبل از ورود خارج می‌شود.">
-            of gym leads never receive a single follow-up. That is revenue walking out before it ever walked in.
-          </div>
-          <div class="card-divider"></div>
-          <div class="big-num">60<em>%</em></div>
-          <div class="big-label"
-               data-en="of members who go inactive will not renew. Most clubs have no system to catch them before it's too late."
-               data-fa="از اعضای غیرفعال تمدید نمی‌کنند. اکثر باشگاه‌ها هیچ سیستمی برای متوقف کردن آنها قبل از دیر شدن ندارند.">
-            of members who go inactive will not renew. Most clubs have no system to catch them before it's too late.
-          </div>
-        </div>
+<div class="urg">
+  <div class="w"><div class="urgi">
+    <span><strong>Limited availability</strong> — we select our clubs carefully</span>
+    <div class="urgsep"></div>
+    <span>Currently accepting clubs in <strong>Tehran, Isfahan &amp; Mashhad</strong></span>
+    <div class="urgsep"></div>
+    <span><strong>Zero technical work</strong> required from your side</span>
+  </div></div>
+</div>
+
+<div class="proof">
+  <div class="w" style="padding-inline:0"><div class="proofg">
+    <div class="proofc"><div class="proofn">80<em>%</em></div><div class="proofl">Avg Churn Reduction</div></div>
+    <div class="proofc"><div class="proofn">34<em>%</em></div><div class="proofl">Revenue Increase (90 days)</div></div>
+    <div class="proofc"><div class="proofn">4<em>min</em></div><div class="proofl">Lead Response Time</div></div>
+    <div class="proofc"><div class="proofn">72<em>h</em></div><div class="proofl">Time to Go Live</div></div>
+  </div></div>
+</div>
+
+<section class="sec" aria-labelledby="prob-h">
+  <div class="w"><div class="g2">
+    <div>
+      <div class="lbl">The Real Cost</div>
+      <h2 id="prob-h">Every day without IKONIQ is money you earned — and lost.</h2>
+      <ul class="plist">
+        <li><strong>You paid to attract every lead.</strong> They message at 9pm asking about membership. Nobody replies until morning. They join the gym that responded in 4 minutes. That lead cost you money. You got nothing.</li>
+        <li><strong>You worked hard to sign every member.</strong> One stops coming after 5 weeks. Nobody notices. Their membership expires. You find out when the payment doesn't arrive — 30 days too late.</li>
+        <li><strong>Your staff time is worth real money.</strong> Every hour spent answering the same questions on Telegram, scheduling classes manually, writing follow-up messages is an hour not growing your club.</li>
+        <li><strong>You're making decisions blind.</strong> Without data on retention, revenue trends, and lead conversion, every business decision is a guess — and some of those guesses are expensive.</li>
+      </ul>
+    </div>
+    <div>
+      <div class="statcard">
+        <div class="big">70<em>%</em></div>
+        <p class="bigtxt">of leads at the average Iranian gym never receive a single follow-up message. You spent money to attract them. You got nothing back.</p>
+        <div class="bigdiv"></div>
+        <div class="big">60<em>%</em></div>
+        <p class="bigtxt">of members who go inactive will not renew without personalized intervention. IKONIQ identifies every one of them — and acts automatically before they leave.</p>
       </div>
     </div>
+  </div></div>
+</section>
+
+<section class="sec compsec" aria-labelledby="comp-h">
+  <div class="w">
+    <div class="lbl">The Difference</div>
+    <h2 id="comp-h" style="font-size:clamp(28px,3.3vw,46px)">What your club looks like with — and without — IKONIQ.</h2>
+    <table class="compt" aria-label="IKONIQ comparison">
+      <thead><tr><th>Situation</th><th>Without IKONIQ</th><th>With IKONIQ</th></tr></thead>
+      <tbody>
+        <tr><td>Lead arrives at 10pm on Telegram</td><td>Seen at 9am next day. Too late.</td><td><span class="yes">✓</span> AI replies in 4 minutes. Tour booked.</td></tr>
+        <tr><td>Member hasn't visited in 12 days</td><td>Nobody notices until they don't renew.</td><td><span class="yes">✓</span> AI re-engagement sent at day 7. Member returns.</td></tr>
+        <tr><td>Membership expires next week</td><td>No reminder. Member doesn't renew.</td><td><span class="yes">✓</span> Renewal reminder auto-sent 14 days early.</td></tr>
+        <tr><td>Member wants a personalized training plan</td><td>Trainer spends 40 minutes writing it manually.</td><td><span class="yes">✓</span> AI generates full plan in 8 seconds via Telegram.</td></tr>
+        <tr><td>Club owner checks monthly revenue</td><td>Spreadsheet updated manually on Fridays.</td><td><span class="yes">✓</span> Live dashboard. Real-time. Always accurate.</td></tr>
+        <tr><td>Prospect asks about pricing at midnight</td><td>No answer. They call the competition.</td><td><span class="yes">✓</span> AI assistant responds in 3 seconds in Farsi.</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
-<!-- SERVICES -->
-<section id="services">
-  <div class="container">
-    <div class="services-header">
-      <div>
-        <div class="eyebrow" data-en="What We Do" data-fa="چه می‌کنیم">What We Do</div>
-        <h2 class="section-h2"
-            data-en="Six AI systems. One platform. Total transformation."
-            data-fa="شش سیستم هوش مصنوعی. یک پلتفرم. تحول کامل.">
-          Six AI systems. One platform. Total transformation.
-        </h2>
+<section class="sec ress" aria-labelledby="res-h">
+  <div class="w">
+    <div class="lbl">What IKONIQ Delivers</div>
+    <h2 id="res-h" style="font-size:clamp(28px,3.3vw,46px)">Real outcomes. Measured every month.</h2>
+    <div class="resg">
+      <div class="resc">
+        <div class="resn">34%</div>
+        <div class="rest">Average revenue increase</div>
+        <div class="resd">Achieved within 90 days, driven by improved lead conversion and automated renewal capture that were previously falling through.</div>
       </div>
-      <div>
-        <p class="section-body"
-           data-en="Every system is purpose-built for health and fitness businesses in Iran. Not generic software. Not adapted tools. Built from scratch for your market."
-           data-fa="هر سیستم به طور خاص برای کسب‌وکارهای سلامت و تناسب اندام در ایران ساخته شده است. نرم‌افزار عمومی نیست. ابزارهای تطبیق‌یافته نیست. از ابتدا برای بازار شما ساخته شده است.">
-          Every system is purpose-built for health and fitness businesses in Iran. Not generic software. Not adapted tools. Built from scratch for your market.
-        </p>
+      <div class="resc">
+        <div class="resn">4 min</div>
+        <div class="rest">Lead response time</div>
+        <div class="resd">Down from the industry average of 18 hours. Leads responded to within 5 minutes are 21× more likely to convert into members.</div>
       </div>
-    </div>
-    <div class="services-grid">
-      <div class="service-card fade-up">
-        <div class="svc-num">01</div>
-        <span class="svc-icon">⚡</span>
-        <div class="svc-title" data-en="AI Lead Capture" data-fa="جذب سرنخ با هوش مصنوعی">AI Lead Capture</div>
-        <div class="svc-desc"
-             data-en="Every inquiry from Telegram, Instagram, and WhatsApp is captured, qualified, and prioritized instantly. No lead escapes."
-             data-fa="هر استعلامی از تلگرام، اینستاگرام و واتساپ فوری ضبط، ارزیابی و اولویت‌بندی می‌شود. هیچ سرنخی فرار نمی‌کند.">
-          Every inquiry from Telegram, Instagram, and WhatsApp is captured, qualified, and prioritized instantly. No lead escapes.
-        </div>
-      </div>
-      <div class="service-card fade-up d1">
-        <div class="svc-num">02</div>
-        <span class="svc-icon">🔄</span>
-        <div class="svc-title" data-en="Member Retention AI" data-fa="هوش مصنوعی حفظ عضو">Member Retention AI</div>
-        <div class="svc-desc"
-             data-en="Our AI detects at-risk members before they churn and triggers personalized re-engagement at precisely the right moment."
-             data-fa="هوش مصنوعی ما اعضای در معرض خطر را قبل از ریزش شناسایی می‌کند و تعامل مجدد شخصی‌سازی‌شده را در لحظه دقیق فعال می‌کند.">
-          Our AI detects at-risk members before they churn and triggers personalized re-engagement at precisely the right moment.
-        </div>
-      </div>
-      <div class="service-card fade-up d2">
-        <div class="svc-num">03</div>
-        <span class="svc-icon">🏋️</span>
-        <div class="svc-title" data-en="AI Training Plans" data-fa="برنامه‌های تمرینی هوش مصنوعی">AI Training Plans</div>
-        <div class="svc-desc"
-             data-en="Personalized training programs generated by AI based on goals, fitness level, and available equipment. Delivered via Telegram in seconds."
-             data-fa="برنامه‌های تمرینی شخصی‌سازی‌شده توسط هوش مصنوعی. بر اساس اهداف، سطح آمادگی و تجهیزات. در ثانیه‌ها از طریق تلگرام ارائه می‌شود.">
-          Personalized training programs generated by AI based on goals, fitness level, and available equipment. Delivered via Telegram in seconds.
-        </div>
-      </div>
-      <div class="service-card fade-up">
-        <div class="svc-num">04</div>
-        <span class="svc-icon">🥗</span>
-        <div class="svc-title" data-en="AI Nutrition Guidance" data-fa="راهنمایی تغذیه با هوش مصنوعی">AI Nutrition Guidance</div>
-        <div class="svc-desc"
-             data-en="Tailored nutrition plans rooted in Iranian dietary culture and aligned with your members' fitness goals. A premium service they will pay for."
-             data-fa="برنامه‌های تغذیه متناسب با فرهنگ غذایی ایرانی و اهداف تناسب اندام اعضا. یک خدمات ممتاز که اعضا برایش پول می‌پردازند.">
-          Tailored nutrition plans rooted in Iranian dietary culture and aligned with your members' fitness goals. A premium service they will pay for.
-        </div>
-      </div>
-      <div class="service-card fade-up d1">
-        <div class="svc-num">05</div>
-        <span class="svc-icon">📊</span>
-        <div class="svc-title" data-en="Business Intelligence" data-fa="هوش تجاری">Business Intelligence</div>
-        <div class="svc-desc"
-             data-en="Real-time visibility into your club's health. Member activity, revenue, lead pipeline, retention rates — all in one live dashboard."
-             data-fa="دید لحظه‌ای از سلامت باشگاه شما. فعالیت اعضا، درآمد، خط لوله سرنخ، نرخ نگهداشت — همه در یک داشبورد زنده.">
-          Real-time visibility into your club's health. Member activity, revenue, lead pipeline, retention rates — all in one live dashboard.
-        </div>
-      </div>
-      <div class="service-card fade-up d2">
-        <div class="svc-num">06</div>
-        <span class="svc-icon">🤖</span>
-        <div class="svc-title" data-en="24/7 AI Club Assistant" data-fa="دستیار هوش مصنوعی ۲۴/۷">24/7 AI Club Assistant</div>
-        <div class="svc-desc"
-             data-en="A dedicated AI agent on your Telegram channel answering member questions, handling bookings, and representing your club with precision around the clock."
-             data-fa="یک عامل هوش مصنوعی اختصاصی در کانال تلگرام شما که سوالات اعضا را پاسخ می‌دهد، رزروها را مدیریت می‌کند و باشگاه شما را شبانه‌روز با دقت نمایندگی می‌کند.">
-          A dedicated AI agent on your Telegram channel answering member questions, handling bookings, and representing your club with precision around the clock.
-        </div>
+      <div class="resc">
+        <div class="resn">80%</div>
+        <div class="rest">Churn reduction</div>
+        <div class="resd">Because IKONIQ identifies at-risk members and re-engages them automatically — before they decide not to renew their membership.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="how" id="how">
-  <div class="container">
-    <div class="how-top">
-      <div>
-        <div class="eyebrow" data-en="The Process" data-fa="فرآیند">The Process</div>
-        <h2 class="section-h2"
-            data-en="Live in <em>72 hours.</em> No IT team needed."
-            data-fa="در <em>۷۲ ساعت</em> فعال. بدون نیاز به تیم فناوری.">
-          Live in <em>72 hours.</em> No IT team needed.
-        </h2>
+<section class="sec" style="background:var(--bk);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)" aria-labelledby="svc-h">
+  <div class="w">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:end;margin-bottom:52px;padding-bottom:40px;border-bottom:1px solid var(--bd)">
+      <div><div class="lbl">The Platform</div><h2 id="svc-h" style="font-size:clamp(28px,3.3vw,46px)">Six AI systems.<br>One platform.</h2></div>
+      <p style="font-size:15px;font-weight:300;color:var(--g1);line-height:1.75">Every system purpose-built for Iran. Not adapted from generic software — engineered from scratch for your channels, your culture, and the way your club actually operates.</p>
+    </div>
+    <div class="svclist">
+      <div class="svcrow" onclick="go('services')" tabindex="0" role="link"><div class="sn">01</div><div class="si"><div class="snm">AI Lead Capture &amp; Qualification</div><div class="sds">Every Telegram, Instagram &amp; WhatsApp inquiry captured and followed up in minutes. Zero leads lost, zero manual effort.</div></div><div class="stag">Lead Management</div><div class="sarr">→</div></div>
+      <div class="svcrow" onclick="go('services')" tabindex="0" role="link"><div class="sn">02</div><div class="si"><div class="snm">Member Retention AI</div><div class="sds">Detects at-risk members before churn. Personalized re-engagement via Telegram — automatic, at exactly the right moment.</div></div><div class="stag">Retention</div><div class="sarr">→</div></div>
+      <div class="svcrow" onclick="go('services')" tabindex="0" role="link"><div class="sn">03</div><div class="si"><div class="snm">AI Training Plans</div><div class="sds">Personalized programs generated in 8 seconds. Delivered directly to members on Telegram. Every member gets a personal trainer.</div></div><div class="stag">Fitness AI</div><div class="sarr">→</div></div>
+      <div class="svcrow" onclick="go('services')" tabindex="0" role="link"><div class="sn">04</div><div class="si"><div class="snm">AI Nutrition Guidance</div><div class="sds">Tailored plans built around Iranian food culture. A premium add-on your members will actively pay for.</div></div><div class="stag">Nutrition AI</div><div class="sarr">→</div></div>
+      <div class="svcrow" onclick="go('services')" tabindex="0" role="link"><div class="sn">05</div><div class="si"><div class="snm">Business Intelligence Dashboard</div><div class="sds">Revenue, member activity, lead pipeline. One live dashboard updated in real time — built for owners, not IT teams.</div></div><div class="stag">Analytics</div><div class="sarr">→</div></div>
+      <div class="svcrow" onclick="go('services')" tabindex="0" role="link"><div class="sn">06</div><div class="si"><div class="snm">24/7 AI Club Assistant</div><div class="sds">Your club on Telegram, 24 hours a day. Answers questions, books tours, handles enquiries — in Farsi and English.</div></div><div class="stag">Automation</div><div class="sarr">→</div></div>
+    </div>
+    <div style="padding-top:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <span style="font-size:13px;color:var(--g1)">All six systems. Live in 72 hours. No technical setup from your side.</span>
+      <span class="btn btn-gh" onclick="go('services')">See All Services in Detail →</span>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="proc-h">
+  <div class="w">
+    <div class="prochd">
+      <div><div class="lbl">How It Works</div><h2 id="proc-h">Live in 72 hours.<br>You do nothing technical.</h2></div>
+      <p style="font-size:15px;font-weight:300;color:var(--g1);line-height:1.75">Most club owners expect weeks of IT complexity. IKONIQ is different. Our engineers handle everything. You share access to your channels — and your club transforms.</p>
+    </div>
+    <div class="stepg">
+      <div class="stepc"><div class="stepn">01</div><h3>We connect</h3><p>Our engineers integrate with your Telegram, Instagram, and any existing tools. You share access — we do everything else. No IT skills needed from your side. Ever.</p></div>
+      <div class="stepc"><div class="stepn">02</div><h3>Systems activate</h3><p>All six AI systems go live within 72 hours. Lead capture, retention monitoring, AI plans, nutrition, dashboard, and your AI assistant — all running simultaneously from day one.</p></div>
+      <div class="stepc"><div class="stepn">03</div><h3>You grow</h3><p>Watch your dashboard update in real time. Leads converting. Members staying longer. Renewals automated. Every result is quantified in your monthly performance report.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="background:var(--d1);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)" aria-labelledby="why-h">
+  <div class="w">
+    <div class="lbl">Why Choose IKONIQ</div>
+    <h2 id="why-h" style="font-size:clamp(28px,3.3vw,46px)">Not for every gym.<br>For the ones serious about growth.</h2>
+    <div class="whyg">
+      <div class="whyc"><div class="wcn">01</div><h3>Health only</h3><p>We work in one industry. Every decision is shaped by one question: does this make health clubs more successful?</p></div>
+      <div class="whyc"><div class="wcn">02</div><h3>Results-accountable</h3><p>We are accountable to your revenue, churn, and retention numbers — not to features deployed or software versions.</p></div>
+      <div class="whyc"><div class="wcn">03</div><h3>Institutional backing</h3><p>Strategic support from key organizations in Iran's health and sports sector — including at the Ministry level.</p></div>
+      <div class="whyc"><div class="wcn">04</div><h3>Built for Iran</h3><p>Native Telegram, Farsi-first, Iranian food culture, local infrastructure. Not a foreign tool adapted — built here, for here.</p></div>
+    </div>
+    <div style="margin-top:28px"><span class="btn btn-gh" onclick="go('about')">Learn More About IKONIQ →</span></div>
+  </div>
+</section>
+
+<section class="sec" style="background:var(--ob);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)" aria-labelledby="testi-h">
+  <div class="w">
+    <div class="lbl">From the Field</div>
+    <h2 id="testi-h" style="font-size:clamp(28px,3.3vw,46px)">What happens when IKONIQ goes live.</h2>
+    <div class="testig">
+      <div class="testic">
+        <div class="tnum">+340%</div><div class="tlbl">Lead conversion improvement</div>
+        <p class="tq">"Before IKONIQ, we were losing 8–10 potential members every week because we simply couldn't respond fast enough. Now our AI replies in seconds. We haven't lost a lead since the first week."</p>
+        <div class="tname">Health Club Owner</div><div class="trole">Tehran — 280 active members</div>
       </div>
-      <div>
-        <p class="section-body"
-           data-en="We handle the entire setup. You focus on running your business. The systems are live before you finish your first week."
-           data-fa="ما تمام نصب را مدیریت می‌کنیم. شما روی اداره کسب‌وکارتان تمرکز کنید. سیستم‌ها قبل از پایان هفته اول شما فعال هستند.">
-          We handle the entire setup. You focus on running your business. The systems are live before you finish your first week.
-        </p>
+      <div class="testic">
+        <div class="tnum">82%</div><div class="tlbl">Retention rate (up from 54%)</div>
+        <p class="tq">"We used to lose 30–40 members a month without knowing why until it was too late. Now I see every at-risk member on my dashboard before they decide to leave. Churn is completely different now."</p>
+        <div class="tname">Fitness Club Manager</div><div class="trole">Isfahan — 190 active members</div>
+      </div>
+      <div class="testic">
+        <div class="tnum">72h</div><div class="tlbl">From zero to fully live</div>
+        <p class="tq">"I expected weeks of technical setup and headaches. IKONIQ was running in three days. My staff did nothing. Now our AI handles 47 member queries every day and we focus entirely on the floor."</p>
+        <div class="tname">Wellness Center Director</div><div class="trole">Mashhad — 320 active members</div>
       </div>
     </div>
-    <div class="steps">
-      <div class="step fade-up">
-        <div class="step-badge">01</div>
-        <div class="step-title" data-en="Connect" data-fa="اتصال">Connect</div>
-        <div class="step-desc"
-             data-en="We integrate with your Telegram, Instagram, and existing tools. Zero technical requirement from your side. Our team handles every step of setup."
-             data-fa="ما با تلگرام، اینستاگرام و ابزارهای موجود شما یکپارچه می‌شویم. هیچ نیاز فنی از طرف شما وجود ندارد. تیم ما هر مرحله از نصب را مدیریت می‌کند.">
-          We integrate with your Telegram, Instagram, and existing tools. Zero technical requirement from your side. Our team handles every step of setup.
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="faq-h">
+  <div class="w" style="max-width:760px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:36px;flex-wrap:wrap;gap:16px">
+      <div><div class="lbl">FAQ</div><h2 id="faq-h" style="font-size:clamp(28px,3.3vw,46px)">What gym owners ask.</h2></div>
+      <span class="btn btn-gh" onclick="go('contact')">Ask Us Directly →</span>
+    </div>
+    <details><summary>What exactly does IKONIQ do for my gym? <span class="fqi">+</span></summary><div class="fqa">IKONIQ gives your gym six AI systems running simultaneously: it captures and follows up every lead within minutes, monitors every member for early signs of churn, generates personalized training and nutrition plans, shows you real-time business data on a live dashboard, and runs a 24/7 AI assistant on your Telegram. All of this runs automatically — without you or your staff doing anything manually.</div></details>
+    <details><summary>How long does setup take? <span class="fqi">+</span></summary><div class="fqa">72 hours from your onboarding call to fully live. Our team handles 100% of integration and configuration. You share access to your Telegram and Instagram — we handle everything else. No IT skills required from your side.</div></details>
+    <details><summary>My club uses Telegram for everything. Does IKONIQ work with that? <span class="fqi">+</span></summary><div class="fqa">Yes — IKONIQ is built natively around Telegram. Not a workaround. Every lead from Telegram is processed immediately. Your AI assistant runs on your club's Telegram channel. Member re-engagement, training plans, and nutrition plans are all delivered via Telegram. Your members need zero new apps.</div></details>
+    <details><summary>How will I know if it's actually working? <span class="fqi">+</span></summary><div class="fqa">Your dashboard shows everything in real time: lead response times, conversion rates, member activity, at-risk alerts, and revenue trends. You also receive a detailed monthly performance report via Telegram — leads converted, members retained, revenue recovered. Real numbers, not vague claims.</div></details>
+    <details><summary>What does IKONIQ cost? <span class="fqi">+</span></summary><div class="fqa">Pricing is customized based on your club size and requirements. We don't publish fixed pricing because we don't do fixed packages — we build for your situation. Message us on Telegram at <a href="https://t.me/beikoniq" target="_blank">@beikoniq</a> and we'll discuss pricing in your free 30-minute session.</div></details>
+    <details><summary>Can I see a demo before committing? <span class="fqi">+</span></summary><div class="fqa">Yes. Book a free 30-minute session via Telegram. We show every system live, give you a revenue recovery estimate for your club, and answer everything directly. No slides. No sales deck. Just a direct conversation about your club and what IKONIQ would mean for it.</div></details>
+  </div>
+</section>
+
+<section class="cta" aria-labelledby="cta-h">
+  <div class="w"><div class="ctai">
+    <div><h2 id="cta-h">Your competition<br>is already looking at this.</h2><p>The clubs that move first keep the biggest advantage. Book a free 30-minute session — real numbers, your club, no pressure.</p></div>
+    <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start">
+      <a href="https://t.me/beikoniq" target="_blank" rel="noopener" class="btn btn-dk btn-lg">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 13.717l-2.95-.924c-.64-.203-.655-.64.136-.954l11.57-4.461c.537-.194 1.006.131.326.87z"/></svg>
+        Open Telegram — @beikoniq
+      </a>
+      <span style="font-size:12px;color:rgba(255,255,255,.5)">Free session · No commitment · Limited spots</span>
+    </div>
+  </div></div>
+</section>
+
+<footer><div class="w">
+  <div class="ftt"><div><div class="ftl" onclick="go('home')">IKON<em>IQ</em></div><div class="fttag">Be IKONIQ</div></div>
+  <div class="ftnav"><a onclick="go('home')">Home</a><a onclick="go('services')">Services</a><a onclick="go('about')">About</a><a onclick="go('contact')">Contact</a><a href="https://t.me/beikoniq" target="_blank" rel="noopener">@beikoniq</a></div></div>
+  <div class="ftb"><p class="ftcopy">© 2025 IKONIQ. AI Health Platform for Gyms &amp; Clubs in Iran.</p><span class="ftdom">beikoniq.com</span></div>
+</div></footer>
+</div><!-- /home -->
+
+<!-- ═══ SERVICES ════════════════════════════════ -->
+<div id="page-services" class="page">
+<section class="pghero" aria-labelledby="svc-pg-h">
+  <div class="pgbg"></div>
+  <div class="w" style="position:relative;z-index:2">
+    <div class="lbl">Services</div>
+    <h1 id="svc-pg-h">Six AI systems.<br><span class="fi">Built for serious health clubs.</span></h1>
+    <p class="pgp">Every system engineered from scratch for Iran. Not software you license — AI systems your club runs on. All six go live within 72 hours of one conversation. You do nothing technical.</p>
+    <a href="https://t.me/beikoniq" target="_blank" rel="noopener" class="btn btn-fi">Let's Talk</a>
+  </div>
+</section>
+
+<div class="sjump"><div class="w"><div class="sjumpi">
+  <span class="sji" onclick="jmp('s1')">01 Lead Capture</span>
+  <span class="sji" onclick="jmp('s2')">02 Retention AI</span>
+  <span class="sji" onclick="jmp('s3')">03 Training Plans</span>
+  <span class="sji" onclick="jmp('s4')">04 Nutrition</span>
+  <span class="sji" onclick="jmp('s5')">05 Intelligence</span>
+  <span class="sji" onclick="jmp('s6')">06 AI Assistant</span>
+</div></div></div>
+
+<section class="sb" id="s1" aria-labelledby="s1h">
+  <div class="w"><div class="sbl">
+    <div>
+      <div class="sbn">01 / 06</div>
+      <h2 class="sbh" id="s1h">AI Lead Capture<br>&amp; Qualification</h2>
+      <p class="sbtg">Every lead that contacts you via Telegram, Instagram, or WhatsApp is captured the moment it arrives, qualified by AI in seconds, and followed up automatically. Your gym never misses another opportunity — at any hour.</p>
+      <div class="ba">
+        <div class="bac"><div class="bal">Without IKONIQ</div><div class="bat">A potential member messages at 9pm asking about membership prices. Your staff see it the next morning. By then, two competitors have already replied. The lead joins somewhere else. You spent money attracting them and got nothing back.</div></div>
+        <div class="bac"><div class="bal">With IKONIQ</div><div class="bat">Your AI responds within 4 minutes at any hour. It qualifies their goals and budget, answers their questions, and books a tour automatically. By morning, you have a confirmed appointment — with no human involvement overnight.</div></div>
+      </div>
+      <ul class="bens">
+        <li>100% of leads captured from Telegram, Instagram, WhatsApp and website — nothing slips through</li>
+        <li>AI qualifies by intent, budget and timeline so your team only speaks to serious prospects</li>
+        <li>Automated follow-up sequences start within minutes of the first inquiry</li>
+        <li>Pipeline dashboard shows every prospect, their status, and the next required action</li>
+        <li>Escalation alerts when a high-priority lead needs a human conversation</li>
+        <li>Average response time: 4 minutes vs. 18-hour industry average</li>
+      </ul>
+      <div class="chtags">
+        <div class="chtag"><div class="chd"></div>Telegram</div>
+        <div class="chtag"><div class="chd"></div>Instagram DM</div>
+        <div class="chtag"><div class="chd"></div>WhatsApp</div>
+        <div class="chtag"><div class="chd"></div>Website</div>
+      </div>
+    </div>
+    <div>
+      <div class="vp">
+        <div class="vphd"><div class="vd"></div><div class="vd"></div><div class="vd"></div><div class="vtt">Lead Pipeline — Live</div></div>
+        <div class="vr"><span class="vrl">New leads today</span><span class="vrv">14</span></div>
+        <div class="vr"><span class="vrl">Qualified by AI</span><span class="vrv">11</span></div>
+        <div class="vr"><span class="vrl">Follow-up sent</span><span class="vrv">11</span></div>
+        <div class="vr"><span class="vrl">Hot leads waiting</span><span class="bgfi">3 ready to close</span></div>
+        <div class="vr"><span class="vrl">Converted this week</span><span class="bggr">6 new members</span></div>
+        <div style="margin-top:18px;font-size:11px;color:var(--g2)">Average response time</div>
+        <div style="font-size:30px;font-weight:800;font-family:var(--fh);color:var(--fi);margin:4px 0 2px">4 min</div>
+        <div style="font-size:11px;color:var(--g2)">vs 18 hours industry average</div>
+      </div>
+      <div class="metc"><div class="metv">70<em>%</em></div><div class="mett">of leads at the average Iranian gym never receive a single follow-up. IKONIQ makes that number zero — automatically.</div></div>
+    </div>
+  </div></div>
+</section>
+
+<section class="sb" id="s2" aria-labelledby="s2h">
+  <div class="w"><div class="sbl">
+    <div>
+      <div class="sbn">02 / 06</div>
+      <h2 class="sbh" id="s2h">Member<br>Retention AI</h2>
+      <p class="sbtg">Your most expensive problem is members you worked hard to sign — and then lost without realizing it. IKONIQ monitors every member's behaviour and acts before they leave, every time, automatically.</p>
+      <div class="ba">
+        <div class="bac"><div class="bal">Without IKONIQ</div><div class="bat">A member who joined 3 months ago hasn't visited in 2 weeks. You have no system to notice. Their membership expires. You discover it when the payment doesn't arrive — and lose 3–6 months of revenue from someone who might have stayed with a single message.</div></div>
+        <div class="bac"><div class="bal">With IKONIQ</div><div class="bat">At day 7 of absence, your AI sends a genuine, personalized Telegram message checking in. At day 14, it sends a tailored renewal offer. 80% of at-risk members re-engage before their membership ever expires.</div></div>
+      </div>
+      <ul class="bens">
+        <li>Real-time attendance monitoring for every single member in your club</li>
+        <li>AI-triggered re-engagement at day 7, 14 and 21 of absence</li>
+        <li>Personalized messages based on each member's history — not generic broadcasts</li>
+        <li>Renewal reminders sent automatically 14 days before every membership expires</li>
+        <li>Monthly churn risk report with engagement scores for every member</li>
+        <li>Average result: 80% churn reduction within 60 days of going live</li>
+      </ul>
+    </div>
+    <div>
+      <div class="vp">
+        <div class="vphd"><div class="vd"></div><div class="vd"></div><div class="vd"></div><div class="vtt">Retention Dashboard</div></div>
+        <div class="vbar"><div class="vbarf" style="width:82%"></div></div>
+        <div class="vbarl"><span>Current retention rate</span><span style="color:var(--fi)">82%</span></div>
+        <div class="vr" style="margin-top:14px"><span class="vrl">Active members</span><span class="vrv">247</span></div>
+        <div class="vr"><span class="vrl">At-risk (flagged)</span><span class="bgfi">12 members</span></div>
+        <div class="vr"><span class="vrl">Re-engaged this month</span><span class="bggr">19 returned</span></div>
+        <div class="vr"><span class="vrl">Renewals automated</span><span class="vrv">31</span></div>
+      </div>
+      <div class="metc"><div class="metv">60<em>%</em></div><div class="mett">of inactive members will not renew without direct, personalized intervention. IKONIQ intervenes — every time, automatically.</div></div>
+    </div>
+  </div></div>
+</section>
+
+<section class="sb" id="s3" aria-labelledby="s3h">
+  <div class="w"><div class="sbl">
+    <div>
+      <div class="sbn">03 / 06</div>
+      <h2 class="sbh" id="s3h">AI Training<br>Plans</h2>
+      <p class="sbtg">Give every member a completely personalized training program without spending hours creating them manually. Your AI generates complete weekly plans in 8 seconds and delivers them directly to members on Telegram.</p>
+      <div class="ba">
+        <div class="bac"><div class="bal">Without IKONIQ</div><div class="bat">Writing a proper personalized plan for one member takes 35–45 minutes. With 50 members, that's 40 hours per month — an entire work week just for programs. Most gyms give up and give everyone the same generic template. Members feel it.</div></div>
+        <div class="bac"><div class="bal">With IKONIQ</div><div class="bat">A member tells your Telegram bot their goal, level, and available days. Their complete personalized program is generated in 8 seconds. Your trainer reviews and approves in 2 minutes. The member gets it instantly — feeling genuinely cared for.</div></div>
+      </div>
+      <ul class="bens">
+        <li>Fully personalized programs — not templates — based on goals, fitness level, equipment and schedule</li>
+        <li>Delivered to members via Telegram within seconds. No new apps required</li>
+        <li>Programs update weekly based on member progress and feedback</li>
+        <li>Covers weight training, cardio, functional fitness, HIIT and hybrid programs</li>
+        <li>Trainers can review and approve every plan before it reaches the member</li>
+        <li>Offer premium personalized plans as a paid add-on to increase revenue per member</li>
+      </ul>
+    </div>
+    <div>
+      <div class="vp">
+        <div class="vphd"><div class="vd"></div><div class="vd"></div><div class="vd"></div><div class="vtt">Training Plan Generator</div></div>
+        <div class="vr"><span class="vrl">Member goal</span><span class="bgfi">Fat loss + strength</span></div>
+        <div class="vr"><span class="vrl">Fitness level</span><span class="vrv">Intermediate</span></div>
+        <div class="vr"><span class="vrl">Days per week</span><span class="vrv">4 days</span></div>
+        <div class="vr"><span class="vrl">Equipment available</span><span class="vrv">Full gym</span></div>
+        <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--bd)">
+          <div style="font-size:11px;color:var(--g2);margin-bottom:6px">Time to generate</div>
+          <div style="font-size:30px;font-weight:800;font-family:var(--fh);color:var(--fi);margin-bottom:3px">8 sec</div>
+          <div style="font-size:11px;color:var(--g2)">vs 35–45 minutes manually per member</div>
         </div>
       </div>
-      <div class="step fade-up d1">
-        <div class="step-badge">02</div>
-        <div class="step-title" data-en="Automate" data-fa="خودکارسازی">Automate</div>
-        <div class="step-desc"
-             data-en="Your AI systems go live within 72 hours. Lead capture, member retention, AI plans, and your club assistant are all activated and running simultaneously."
-             data-fa="سیستم‌های هوش مصنوعی شما ظرف ۷۲ ساعت فعال می‌شوند. جذب سرنخ، حفظ عضو، برنامه‌های هوش مصنوعی و دستیار باشگاه شما همه به طور همزمان فعال و در حال اجرا هستند.">
-          Your AI systems go live within 72 hours. Lead capture, member retention, AI plans, and your club assistant are all activated and running simultaneously.
-        </div>
+    </div>
+  </div></div>
+</section>
+
+<section class="sb" id="s4" aria-labelledby="s4h">
+  <div class="w"><div class="sbl">
+    <div>
+      <div class="sbn">04 / 06</div>
+      <h2 class="sbh" id="s4h">AI Nutrition<br>Guidance</h2>
+      <p class="sbtg">Most nutrition software gives generic, western-focused plans Iranian members can't practically follow. IKONIQ generates personalized nutrition plans built around Iranian food culture — practical, relevant, and effective.</p>
+      <div class="ba">
+        <div class="bac"><div class="bal">Without IKONIQ</div><div class="bat">Members ask for nutrition advice. You either say "consult a dietitian" (friction, cost) or hand them a generic plan full of foods unavailable in their kitchen. Neither works. Members stop seeing results and start looking elsewhere.</div></div>
+        <div class="bac"><div class="bal">With IKONIQ</div><div class="bat">Members receive personalized plans built around Ghormeh Sabzi, Ash Reshteh, Persian rice dishes, and other culturally familiar foods — precisely calibrated to their macros and goals. Plans they'll actually follow.</div></div>
       </div>
-      <div class="step fade-up d2">
-        <div class="step-badge">03</div>
-        <div class="step-title" data-en="Grow" data-fa="رشد کنید">Grow</div>
-        <div class="step-desc"
-             data-en="Watch your dashboard update in real time. More leads converting, members staying longer, renewals happening automatically. Monthly reports quantify every result."
-             data-fa="داشبورد خود را در زمان واقعی تماشا کنید. سرنخ‌های بیشتری تبدیل می‌شوند، اعضا بیشتر می‌مانند، تمدیدها به صورت خودکار انجام می‌شوند. گزارش‌های ماهانه هر نتیجه‌ای را کمی می‌کنند.">
-          Watch your dashboard update in real time. More leads converting, members staying longer, renewals happening automatically. Monthly reports quantify every result.
+      <ul class="bens">
+        <li>Plans built around real Iranian food — not western food databases nobody uses</li>
+        <li>Calibrated to individual macronutrient needs, fitness goals, and dietary restrictions</li>
+        <li>Adjusts for fat loss, muscle gain or maintenance phases</li>
+        <li>Delivered directly to members via Telegram — practical and easy to follow</li>
+        <li>Offer as a premium paid add-on, creating a new revenue stream for your club</li>
+        <li>Works in tandem with AI training plans for a complete member wellness experience</li>
+      </ul>
+    </div>
+    <div>
+      <div class="vp">
+        <div class="vphd"><div class="vd"></div><div class="vd"></div><div class="vd"></div><div class="vtt">Nutrition Plan — Week 1</div></div>
+        <div class="vr"><span class="vrl">Daily calories</span><span class="vrv">2,100 kcal</span></div>
+        <div class="vr"><span class="vrl">Protein target</span><span class="vrv">160g / day</span></div>
+        <div class="vr"><span class="vrl">Carbohydrates</span><span class="vrv">220g / day</span></div>
+        <div class="vr"><span class="vrl">Fats</span><span class="vrv">65g / day</span></div>
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);font-size:13px;color:var(--g1);line-height:1.7">Includes: Ghormeh Sabzi, Lentil soup, Grilled chicken with Persian rice, Omelette, Yogurt with cucumber, Lavash, Fresh fruit</div>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<section class="sb" id="s5" aria-labelledby="s5h">
+  <div class="w"><div class="sbl">
+    <div>
+      <div class="sbn">05 / 06</div>
+      <h2 class="sbh" id="s5h">Business<br>Intelligence</h2>
+      <p class="sbtg">Most gym owners run their business on memory, instinct, and Friday spreadsheets. IKONIQ gives you real-time visibility into every metric that matters — revenue, members, leads, retention — on one dashboard, always live.</p>
+      <div class="ba">
+        <div class="bac"><div class="bal">Without IKONIQ</div><div class="bat">Revenue is tracked in a spreadsheet someone updates when they remember. Member counts come from memory. You have no idea which marketing channel brings your best leads, or which month will be bad until it already is. You're flying blind.</div></div>
+        <div class="bac"><div class="bal">With IKONIQ</div><div class="bat">Revenue trends, member activity heatmaps, lead conversion by channel, churn risk scores, and upcoming renewals — all on one screen, updated in real time, accessible from your phone wherever you are.</div></div>
+      </div>
+      <ul class="bens">
+        <li>Monthly recurring revenue (MRR) tracked and visualized automatically — no manual entry</li>
+        <li>Member activity heatmap showing who is active, at-risk, or churned at a glance</li>
+        <li>Lead-to-member conversion rate broken down by source channel</li>
+        <li>Retention and churn trends over 30, 60 and 90 days</li>
+        <li>Upcoming renewals calendar so you can act proactively instead of reactively</li>
+        <li>Monthly performance PDF report delivered automatically to your Telegram</li>
+      </ul>
+    </div>
+    <div>
+      <div class="vp">
+        <div class="vphd"><div class="vd"></div><div class="vd"></div><div class="vd"></div><div class="vtt">Club Dashboard — Live</div></div>
+        <div class="vr"><span class="vrl">Monthly Revenue</span><span class="vrv" style="color:var(--fi)">↑ 34% MoM</span></div>
+        <div class="vr"><span class="vrl">Active Members</span><span class="vrv">247 / 260</span></div>
+        <div class="vr"><span class="vrl">New Members (MTD)</span><span class="bggr">+18 this month</span></div>
+        <div class="vr"><span class="vrl">At-Risk Members</span><span class="bgfi">12 flagged</span></div>
+        <div class="vr"><span class="vrl">Lead Conversion Rate</span><span class="vrv">44%</span></div>
+        <div class="vr"><span class="vrl">Renewals this week</span><span class="bggy">8 upcoming</span></div>
+        <div class="vbar" style="margin-top:16px"><div class="vbarf" style="width:82%"></div></div>
+        <div class="vbarl"><span>Overall retention</span><span style="color:var(--fi)">82%</span></div>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<section class="sb" id="s6" aria-labelledby="s6h">
+  <div class="w"><div class="sbl">
+    <div>
+      <div class="sbn">06 / 06</div>
+      <h2 class="sbh" id="s6h">24/7 AI<br>Club Assistant</h2>
+      <p class="sbtg">Your club is open 24 hours a day when IKONIQ is running. A dedicated AI agent on your Telegram channel answers questions, books tours, and represents your brand at any hour — in Farsi and English — while you sleep.</p>
+      <div class="ba">
+        <div class="bac"><div class="bal">Without IKONIQ</div><div class="bat">A prospect messages at 11pm asking about pricing. No response until morning. By 8am they've already joined the gym that replied via automated message at 11:01pm. You lost them while you were asleep, and you'll never know it.</div></div>
+        <div class="bac"><div class="bal">With IKONIQ</div><div class="bat">Your AI assistant responds in 3 seconds, 24 hours a day. It answers pricing questions in Farsi, explains packages, handles class bookings, and creates a professional impression around the clock. You wake up with confirmed appointments.</div></div>
+      </div>
+      <ul class="bens">
+        <li>24/7 availability — responds within 3–4 seconds at any hour, any day of the year</li>
+        <li>Handles pricing questions, class schedules, package comparisons and FAQs</li>
+        <li>Responds fluently in both Farsi and English based on how the member writes</li>
+        <li>Books club tours and consultation appointments directly into your schedule</li>
+        <li>Escalates complex queries to a human staff member at the right moment</li>
+        <li>Branded to your club — members experience your personality, not a generic bot</li>
+      </ul>
+    </div>
+    <div>
+      <div class="vp">
+        <div class="vphd"><div class="vd"></div><div class="vd"></div><div class="vd"></div><div class="vtt">AI Assistant — Telegram</div></div>
+        <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:18px">
+          <div style="background:var(--d3);border-radius:8px 8px 8px 2px;padding:9px 13px;font-size:13px;color:var(--g1);max-width:80%">سلام! قیمت اشتراک ماهانه چقدره؟</div>
+          <div style="background:var(--filo);border:1px solid var(--fibd);border-radius:8px 8px 2px 8px;padding:9px 13px;font-size:13px;color:var(--wh);max-width:88%;align-self:flex-end">سلام! خوش اومدید 😊 اشتراک ماهانه از ۱.۵ میلیون تومان شروع میشه. می‌خواید یه وقت برای بازدید رایگان رزرو کنیم؟</div>
+          <div style="font-size:10px;color:var(--g2);text-align:right">Response: 3 seconds · 11:47 PM</div>
+        </div>
+        <div class="vr"><span class="vrl">Queries answered today</span><span class="vrv">47</span></div>
+        <div class="vr"><span class="vrl">Average response time</span><span class="vrv" style="color:var(--fi)">3.2 seconds</span></div>
+        <div class="vr"><span class="vrl">Tours booked</span><span class="bggr">6 today</span></div>
+        <div class="vr"><span class="vrl">Human escalations</span><span class="bggy">2 today</span></div>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<section class="cta"><div class="w"><div class="ctai">
+  <div><h2>All six systems.<br>Live in 72 hours.</h2><p>No IT team. No complexity. Book a free session and we'll show you exactly which systems will have the biggest impact on your specific club.</p></div>
+  <a href="https://t.me/beikoniq" target="_blank" rel="noopener" class="btn btn-dk btn-lg">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 13.717l-2.95-.924c-.64-.203-.655-.64.136-.954l11.57-4.461c.537-.194 1.006.131.326.87z"/></svg>
+    Open Telegram — @beikoniq
+  </a>
+</div></div></section>
+
+<footer><div class="w">
+  <div class="ftt"><div><div class="ftl" onclick="go('home')">IKON<em>IQ</em></div><div class="fttag">Be IKONIQ</div></div>
+  <div class="ftnav"><a onclick="go('home')">Home</a><a onclick="go('services')">Services</a><a onclick="go('about')">About</a><a onclick="go('contact')">Contact</a><a href="https://t.me/beikoniq" target="_blank" rel="noopener">@beikoniq</a></div></div>
+  <div class="ftb"><p class="ftcopy">© 2025 IKONIQ. All rights reserved.</p><span class="ftdom">beikoniq.com</span></div>
+</div></footer>
+</div><!-- /services -->
+
+<!-- ═══ ABOUT ════════════════════════════════════ -->
+<div id="page-about" class="page">
+<section class="pghero" aria-labelledby="ab-h1">
+  <div class="pgbg"></div>
+  <div class="w" style="position:relative;z-index:2">
+    <div class="lbl">About IKONIQ</div>
+    <h1 id="ab-h1">We exist to transform<br><span class="fi">Iran's health industry.</span></h1>
+    <p class="pgp">Founded in Tehran in 2025, IKONIQ was built because the AI tools available to the world's best health clubs simply weren't available to Iranian gym owners. We built them from scratch — not adapted from somewhere else.</p>
+    <a href="https://t.me/beikoniq" target="_blank" rel="noopener" class="btn btn-fi">Let's Talk</a>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="story-h">
+  <div class="w">
+    <div class="storyg">
+      <div>
+        <div class="lbl">The Origin</div>
+        <h2 id="story-h">We watched a great gym owner lose 40 members in one month. Not because of his gym — because of his tools.</h2>
+        <p>In 2024, we met a gym owner in Tehran running a genuinely excellent club. Clean, well-equipped, great trainers, loyal members. But he operated entirely manually — Telegram messages answered when he got to them, no churn monitoring, no lead system, no data dashboard.</p>
+        <p>In one month, he lost 40 members. Not because they disliked his gym. Because a lead didn't get a reply in time and joined elsewhere. Because a member stopped coming and nobody noticed until their membership expired. Because renewals slipped through with no reminder. Every single loss was preventable.</p>
+        <p>The technology to fix this existed. It was just built for global markets with different channels, different food culture, and different business reality. IKONIQ is what we built instead — from scratch, for Iran, for how Iranian health clubs actually operate.</p>
+      </div>
+      <div>
+        <div class="scard">
+          <div class="sclbl">What We Believe</div>
+          <h3>Iran's best health club owners deserve the same AI tools as the world's best health clubs.</h3>
+          <p>Not an adapted version. Not a translation. Systems built for Telegram, Iranian food culture, and Iranian business reality — and engineered to deliver real results from day one.</p>
+        </div>
+        <div class="scard">
+          <div class="sclbl">Our Goal</div>
+          <h3>Become the operating system for Iran's entire health industry.</h3>
+          <p>Every serious gym, health club, and wellness business in Iran running on IKONIQ — and eventually, expanding this model across the GCC and broader MENA region.</p>
+        </div>
+        <div class="scard">
+          <div class="sclbl">The Opportunity</div>
+          <h3>Iran has over 40,000 registered gyms. Most still operate manually.</h3>
+          <p>No lead automation. No churn monitoring. No AI. The clubs that move first will compound their advantage for years. IKONIQ is the platform that gets them there first.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- WHY IKONIQ -->
-<section id="why">
-  <div class="container">
-    <div class="why-layout">
-      <div>
-        <div class="eyebrow" data-en="Why IKONIQ" data-fa="چرا IKONIQ">Why IKONIQ</div>
-        <h2 class="section-h2"
-            data-en="Not built for every gym. Built for the <em>serious</em> ones."
-            data-fa="برای هر باشگاهی ساخته نشده. برای <em>جدی‌ها</em> ساخته شده.">
-          Not built for every gym. Built for the <em>serious</em> ones.
-        </h2>
-        <div class="reasons">
-          <div class="reason fade-up">
-            <div class="reason-n">01</div>
-            <div>
-              <div class="reason-title" data-en="Health and AI — exclusively" data-fa="سلامت و هوش مصنوعی — به طور انحصاری">Health and AI — exclusively</div>
-              <div class="reason-text" data-en="We operate only in health and fitness. Every system we build, every decision we make is designed for one type of business: yours." data-fa="ما فقط در حوزه سلامت و تناسب اندام فعالیت می‌کنیم. هر سیستمی که می‌سازیم، هر تصمیمی که می‌گیریم برای یک نوع کسب‌وکار طراحی شده: مال شما.">We operate only in health and fitness. Every system we build, every decision we make is designed for one type of business: yours.</div>
-            </div>
-          </div>
-          <div class="reason fade-up d1">
-            <div class="reason-n">02</div>
-            <div>
-              <div class="reason-title" data-en="Results, not software" data-fa="نتایج، نه نرم‌افزار">Results, not software</div>
-              <div class="reason-text" data-en="We don't sell technology. We sell outcomes. More revenue, lower churn, stronger retention. The AI is invisible. What it delivers is not." data-fa="ما فناوری نمی‌فروشیم. نتایج می‌فروشیم. درآمد بیشتر، ریزش کمتر، نگهداشت قوی‌تر. هوش مصنوعی نامرئی است. آنچه ارائه می‌دهد نیست.">We don't sell technology. We sell outcomes. More revenue, lower churn, stronger retention. The AI is invisible. What it delivers is not.</div>
-            </div>
-          </div>
-          <div class="reason fade-up d2">
-            <div class="reason-n">03</div>
-            <div>
-              <div class="reason-title" data-en="Institutional backing" data-fa="حمایت نهادی">Institutional backing</div>
-              <div class="reason-text" data-en="IKONIQ holds strategic partnerships with key organizations in Iran's health and sports sector — bringing a level of credibility and infrastructure no other platform can match." data-fa="IKONIQ مشارکت‌های استراتژیک با سازمان‌های کلیدی در بخش سلامت و ورزش ایران دارد — سطحی از اعتبار و زیرساخت را ارائه می‌دهد که هیچ پلتفرم دیگری نمی‌تواند با آن برابری کند.">IKONIQ holds strategic partnerships with key organizations in Iran's health and sports sector — bringing a level of credibility and infrastructure no other platform can match.</div>
-            </div>
-          </div>
-          <div class="reason fade-up d3">
-            <div class="reason-n">04</div>
-            <div>
-              <div class="reason-title" data-en="Built for Iran. Ready for the world." data-fa="ساخته شده برای ایران. آماده برای جهان.">Built for Iran. Ready for the world.</div>
-              <div class="reason-text" data-en="Native Telegram integration, Farsi-first design, local infrastructure. And engineered from day one to scale globally." data-fa="یکپارچه‌سازی بومی تلگرام، طراحی فارسی‌محور، زیرساخت محلی. و از همان روز اول برای مقیاس‌گذاری جهانی طراحی شده است.">Native Telegram integration, Farsi-first design, local infrastructure. And engineered from day one to scale globally.</div>
-            </div>
-          </div>
-        </div>
+<section class="sec" style="background:var(--d1);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)" aria-labelledby="vals-h">
+  <div class="w">
+    <div class="lbl">Our Values</div>
+    <h2 id="vals-h" style="font-size:clamp(28px,3.3vw,46px)">What every decision we make is built on.</h2>
+    <div class="valsg">
+      <div class="vc"><div class="vcn">01</div><h3>Results above everything</h3><p>We are not a software company — we are an outcomes company. If something doesn't drive revenue, reduce churn, or improve the member experience, it doesn't ship.</p></div>
+      <div class="vc"><div class="vcn">02</div><h3>Speed over perfection</h3><p>Our clients have real businesses with real problems today. We build fast, deploy fast, and iterate continuously with our clients — not in isolation from them.</p></div>
+      <div class="vc"><div class="vcn">03</div><h3>Accountability, always</h3><p>We don't hand over a platform and disappear. If our systems aren't producing results, we want to know. We stay involved, and we fix it.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="team-h">
+  <div class="w">
+    <div class="lbl">The Team</div>
+    <h2 id="team-h" style="font-size:clamp(28px,3.3vw,46px);margin-bottom:12px">Two people.<br>One clear division.</h2>
+    <p style="font-size:15px;font-weight:300;color:var(--g1);margin-bottom:0;max-width:580px">IKONIQ works because the business and technical sides are completely separated. Mehdi doesn't touch code. Sina doesn't take sales calls. Each person operates entirely in their domain.</p>
+    <div class="teamg">
+      <div class="teamc">
+        <div class="tr">Co-founder · Strategy &amp; Growth</div>
+        <div class="tnm">Mehdi Pirooznia</div>
+        <div class="tds">Mehdi leads all strategy, business development, partnerships, sales, and market expansion. He previously launched Wego in Iran — one of Iran's first travel tech platforms — and has built extensive networks across Iran's startup ecosystem, health industry, and government sectors. He speaks to club owners. He defines product direction. He closes deals. He does not touch technology.</div>
+        <div class="tsk"><span>Strategy</span><span>Business Development</span><span>Partnerships</span><span>GCC Markets</span><span>Startup Ecosystems</span></div>
       </div>
-      <div>
-        <div class="exclusive-panel fade-up d1">
-          <div class="exclusive-bar"></div>
-          <div class="exclusive-h"
-               data-en="We work with a limited number of businesses at any time."
-               data-fa="ما در هر زمان با تعداد محدودی از کسب‌وکارها کار می‌کنیم.">
-            We work with a limited number of businesses at any time.
-          </div>
-          <div class="exclusive-p"
-               data-en="Every client receives our full attention. We don't scale by cutting corners. If you're serious about transforming your health business with AI, we want to speak with you."
-               data-fa="هر مشتری توجه کامل ما را دریافت می‌کند. با کم کردن از کیفیت مقیاس نمی‌گذاریم. اگر جدی هستید که کسب‌وکار سلامتتان را با هوش مصنوعی متحول کنید، می‌خواهیم با شما صحبت کنیم.">
-            Every client receives our full attention. We don't scale by cutting corners. If you're serious about transforming your health business with AI, we want to speak with you.
-          </div>
-          <div class="pill" data-en="Limited Availability" data-fa="ظرفیت محدود">Limited Availability</div>
-          <div class="contact-list">
-            <div class="contact-row">
-              <div class="contact-dot"></div>
-              <span data-en="Telegram: " data-fa="تلگرام: ">Telegram: </span>
-              <a href="https://t.me/ikoniq">@ikoniq</a>
-            </div>
-            <div class="contact-row">
-              <div class="contact-dot"></div>
-              <span data-en="Email: " data-fa="ایمیل: ">Email: </span>
-              <a href="mailto:hello@beikoniq.com">hello@beikoniq.com</a>
-            </div>
-            <div class="contact-row">
-              <div class="contact-dot"></div>
-              <span data-en="WhatsApp available" data-fa="واتساپ موجود است">WhatsApp available</span>
-            </div>
-          </div>
-        </div>
+      <div class="teamc">
+        <div class="tr">Co-founder · Technology &amp; AI</div>
+        <div class="tnm">Sina Pirooznia</div>
+        <div class="tds">Sina leads all technical architecture, AI implementation, automation engineering, and infrastructure. A specialist in artificial intelligence, IoT systems, and automation, he also lectures on AI at university level — combining academic depth with hands-on engineering execution. Every AI system IKONIQ deploys is built and maintained by Sina. He does not do sales. He builds systems that work.</div>
+        <div class="tsk"><span>AI Systems</span><span>Automation</span><span>IoT</span><span>n8n</span><span>Engineering Architecture</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-band" id="contact">
-  <div class="container">
-    <div class="cta-flex">
-      <div>
-        <h2 class="cta-h" data-en="Ready to Be IKONIQ?" data-fa="آماده‌اید که IKONIQ باشید؟">Ready to Be IKONIQ?</h2>
-        <p class="cta-sub"
-           data-en="Book a free 30-minute strategy session. We'll show you exactly what IKONIQ can do for your business — with real numbers."
-           data-fa="یک جلسه استراتژی رایگان ۳۰ دقیقه‌ای رزرو کنید. دقیقاً نشان می‌دهیم IKONIQ چه کاری می‌تواند برای کسب‌وکار شما انجام دهد — با اعداد واقعی.">
-          Book a free 30-minute strategy session. We'll show you exactly what IKONIQ can do for your business — with real numbers.
-        </p>
-      </div>
-      <a href="https://t.me/ikoniq" class="btn-dark" data-en="Message Us on Telegram" data-fa="در تلگرام پیام دهید">Message Us on Telegram</a>
+<section class="sec" style="background:var(--d1);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)" aria-labelledby="inst-h">
+  <div class="w">
+    <div class="lbl">Institutional Support</div>
+    <h2 id="inst-h" style="font-size:clamp(28px,3.3vw,46px);margin-bottom:28px">Backed by organizations<br>that shape Iran's sports sector.</h2>
+    <div class="partnb">
+      <h3>Sports Ministry of Iran</h3>
+      <p>IKONIQ operates with strategic support from key organizations within Iran's health and sports sector, including at the Ministry level. This is an active operational relationship — not a logo on a slide.</p>
+      <p>For clubs considering IKONIQ, this means working with a company that has the backing and credibility of the bodies that govern your industry. It also means access to infrastructure, institutional data, and sector reach that no other platform in this market can provide.</p>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="container">
-    <div class="footer-top">
-      <div>
-        <div class="footer-logo">IKON<em>IQ</em></div>
-        <div class="footer-slogan" data-en="Be IKONIQ" data-fa="IKONIQ باشید">Be IKONIQ</div>
-      </div>
-      <div class="footer-nav">
-        <a href="#services" data-en="Services" data-fa="خدمات">Services</a>
-        <a href="#how" data-en="Process" data-fa="فرآیند">Process</a>
-        <a href="#why" data-en="Why Us" data-fa="چرا ما">Why Us</a>
-        <a href="#contact" data-en="Contact" data-fa="تماس">Contact</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="footer-copy" data-en="© 2025 IKONIQ. All rights reserved." data-fa="© ۲۰۲۵ IKONIQ. تمام حقوق محفوظ است.">© 2025 IKONIQ. All rights reserved.</div>
-      <div class="footer-domain">beikoniq.com</div>
+<section class="sec" aria-labelledby="appr-h">
+  <div class="w">
+    <div class="lbl">How We Work</div>
+    <h2 id="appr-h" style="font-size:clamp(28px,3.3vw,46px);margin-bottom:44px">What working with IKONIQ actually looks like.</h2>
+    <div class="apprl">
+      <div class="appri"><div class="apn">01</div><div><h3>We select our clients carefully</h3><p>IKONIQ works with a limited number of health businesses at any given time. Every client receives our full attention — not a support ticket queue. We choose partners who are serious about transformation, not those looking for cheap software to tick a box.</p></div></div>
+      <div class="appri"><div class="apn">02</div><div><h3>You do zero technical work</h3><p>Club owners are not engineers. You shouldn't need to be. Our technical team handles 100% of setup, integration, configuration, and ongoing maintenance. Your only job is to share access to your channels and approve the plan.</p></div></div>
+      <div class="appri"><div class="apn">03</div><div><h3>We measure what actually matters</h3><p>We don't celebrate feature deployments or software versions. We track revenue growth, member churn reduction, and lead conversion improvement — and report these numbers to you every month. If the numbers aren't good, we fix the systems.</p></div></div>
+      <div class="appri"><div class="apn">04</div><div><h3>We stay involved after launch</h3><p>IKONIQ doesn't end at onboarding. Your AI systems are continuously monitored, updated, and improved. We stay in contact, track your performance, and act when something needs adjusting. You have a technical partner, not a vendor who disappears.</p></div></div>
     </div>
   </div>
-</footer>
+</section>
+
+<section class="cta"><div class="w"><div class="ctai">
+  <div><h2>Ready to work together?</h2><p>Limited availability. Serious clubs only. Free 30-minute strategy session — no commitment, no pressure.</p></div>
+  <a href="https://t.me/beikoniq" target="_blank" rel="noopener" class="btn btn-dk btn-lg">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 13.717l-2.95-.924c-.64-.203-.655-.64.136-.954l11.57-4.461c.537-.194 1.006.131.326.87z"/></svg>
+    Open Telegram — @beikoniq
+  </a>
+</div></div></section>
+
+<footer><div class="w">
+  <div class="ftt"><div><div class="ftl" onclick="go('home')">IKON<em>IQ</em></div><div class="fttag">Be IKONIQ</div></div>
+  <div class="ftnav"><a onclick="go('home')">Home</a><a onclick="go('services')">Services</a><a onclick="go('about')">About</a><a onclick="go('contact')">Contact</a><a href="https://t.me/beikoniq" target="_blank" rel="noopener">@beikoniq</a></div></div>
+  <div class="ftb"><p class="ftcopy">© 2025 IKONIQ.</p><span class="ftdom">beikoniq.com</span></div>
+</div></footer>
+</div><!-- /about -->
+
+<!-- ═══ CONTACT ══════════════════════════════════ -->
+<div id="page-contact" class="page">
+<section class="pghero" aria-labelledby="ct-h1">
+  <div class="pgbg"></div>
+  <div class="w" style="position:relative;z-index:2">
+    <div class="lbl">Contact</div>
+    <h1 id="ct-h1">Let's talk about<br><span class="fi">your club.</span></h1>
+    <p class="pgp">We work with a limited number of health businesses at any one time. Every client gets full attention. If you are serious about using AI to transform your club — reach out. We respond fast.</p>
+  </div>
+</section>
+
+<div class="w">
+  <div class="ctl">
+    <div class="ctleft">
+      <div class="lbl">Reach Us</div>
+      <h2>Choose how you want to connect.</h2>
+      <p>All inquiries are handled personally by Mehdi. We don't use automated bots for our own sales conversations — only to run yours.</p>
+      <div class="cm">
+        <div class="cmi">✈️</div>
+        <div><div class="cml">Telegram — Fastest</div><div class="cmv"><a href="https://t.me/beikoniq" target="_blank" rel="noopener">@beikoniq</a></div><div class="cmn">Responds within hours. Our primary channel. If you're serious, this is where to start.</div></div>
+      </div>
+      <div class="cm">
+        <div class="cmi">✉️</div>
+        <div><div class="cml">Email</div><div class="cmv"><a href="mailto:hello@beikoniq.com">hello@beikoniq.com</a></div><div class="cmn">For formal inquiries, partnership proposals, or if you prefer email as a first step.</div></div>
+      </div>
+      <div class="cm">
+        <div class="cmi">💬</div>
+        <div><div class="cml">WhatsApp</div><div class="cmv">Available on request</div><div class="cmn">Start on Telegram — we'll move to WhatsApp if that works better for you.</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="ctcard">
+        <div class="cttag">Free Strategy Session</div>
+        <h3>Book a free 30-minute session.</h3>
+        <p>We show you exactly what IKONIQ does for your specific club — real demo, real numbers, your club's size and situation. No slides. No sales deck. A direct conversation about what changes and by how much.</p>
+        <div class="sesl">
+          <div class="sesi">Live demo of all six AI systems</div>
+          <div class="sesi">Revenue recovery estimate for your club</div>
+          <div class="sesi">Lead conversion improvement specific to your size</div>
+          <div class="sesi">72-hour onboarding walkthrough</div>
+          <div class="sesi">Any question — direct, honest answers</div>
+        </div>
+        <a href="https://t.me/beikoniq" target="_blank" rel="noopener" class="tgbtn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 13.717l-2.95-.924c-.64-.203-.655-.64.136-.954l11.57-4.461c.537-.194 1.006.131.326.87z"/></svg>
+          Open Telegram — @beikoniq
+        </a>
+        <div style="font-size:11px;color:var(--g2);text-align:center">No commitment required · Limited availability · Direct conversation</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="sec" style="background:var(--d1);border-top:1px solid var(--bd)" aria-labelledby="ct-faq-h">
+  <div class="w" style="max-width:760px">
+    <div class="lbl">Before You Reach Out</div>
+    <h2 id="ct-faq-h" style="font-size:clamp(28px,3.3vw,46px);margin-bottom:36px">Questions we get asked most.</h2>
+    <details><summary>Who is IKONIQ for? <span class="fqi">+</span></summary><div class="fqa">Gym owners, health club managers, and wellness business operators in Iran who are serious about using AI to grow revenue, retain members, and automate operations. We're not the right fit for those looking for cheap generic software — we work with owners who understand the value of investing in systems that produce real results.</div></details>
+    <details><summary>How much does IKONIQ cost? <span class="fqi">+</span></summary><div class="fqa">Pricing is customized based on club size, member count, and the specific systems needed. We don't publish fixed prices because we don't offer fixed packages. Message <a href="https://t.me/beikoniq" target="_blank">@beikoniq</a> on Telegram and we'll discuss pricing directly in your free session — no obligation to proceed.</div></details>
+    <details><summary>Do I need any technical knowledge? <span class="fqi">+</span></summary><div class="fqa">None at all. Our engineers handle 100% of setup, integration, and configuration. You need a Telegram account, access to your club's Instagram, and the commitment to grow your business. That is everything.</div></details>
+    <details><summary>How quickly do I see results? <span class="fqi">+</span></summary><div class="fqa">Lead capture and automated response show results from day one — leads that would have been lost are now converted. Member retention improvements are visible within 30 days. Revenue uplift is quantifiable by the end of the first full month. Everything is tracked and reported monthly.</div></details>
+    <details><summary>What if IKONIQ doesn't deliver results? <span class="fqi">+</span></summary><div class="fqa">We stay involved after launch. If the numbers aren't where they should be, we investigate and adjust the systems. We are accountable to outcomes, not just deployment. We've never walked away from a client when results weren't materializing — we fix the problem.</div></details>
+    <details><summary>Do you work with clubs outside Tehran? <span class="fqi">+</span></summary><div class="fqa">Yes. IKONIQ operates entirely through Telegram and digital infrastructure — no geographic restriction within Iran. We currently serve clubs in Tehran, Isfahan, Mashhad, Shiraz and Tabriz. Setup and support are fully remote.</div></details>
+  </div>
+</section>
+
+<section class="cta"><div class="w"><div class="ctai">
+  <div><h2>The session is free.<br>The conversation is direct.</h2><p>30 minutes. No slides. No pressure. Just a clear look at what IKONIQ can do for your club — and what it would cost.</p></div>
+  <a href="https://t.me/beikoniq" target="_blank" rel="noopener" class="btn btn-dk btn-lg">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 13.717l-2.95-.924c-.64-.203-.655-.64.136-.954l11.57-4.461c.537-.194 1.006.131.326.87z"/></svg>
+    Open Telegram — @beikoniq
+  </a>
+</div></div></section>
+
+<footer><div class="w">
+  <div class="ftt"><div><div class="ftl" onclick="go('home')">IKON<em>IQ</em></div><div class="fttag">Be IKONIQ</div></div>
+  <div class="ftnav"><a onclick="go('home')">Home</a><a onclick="go('services')">Services</a><a onclick="go('about')">About</a><a onclick="go('contact')">Contact</a><a href="https://t.me/beikoniq" target="_blank" rel="noopener">@beikoniq</a></div></div>
+  <div class="ftb"><p class="ftcopy">© 2025 IKONIQ. AI Health Platform — Iran.</p><span class="ftdom">beikoniq.com</span></div>
+</div></footer>
+</div><!-- /contact -->
 
 <script>
-  // Language toggle
-  function setLang(lang) {
-    const btns = document.querySelectorAll('.lang-btn');
-    btns.forEach(b => b.classList.remove('active'));
-    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+/* Navigation — display only, no opacity tricks */
+function go(pg) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + pg).classList.add('active');
+  document.querySelectorAll('.navul a').forEach(a => a.classList.remove('cur'));
+  var nl = document.getElementById('nl-' + pg);
+  if (nl) nl.classList.add('cur');
+  window.scrollTo(0, 0);
+  try { history.pushState({pg: pg}, '', pg === 'home' ? '/' : '/' + pg); } catch(e) {}
+}
 
-    if (lang === 'fa') {
-      document.body.classList.add('fa');
-      document.documentElement.lang = 'fa';
-      document.documentElement.dir = 'rtl';
-    } else {
-      document.body.classList.remove('fa');
-      document.documentElement.lang = 'en';
-      document.documentElement.dir = 'ltr';
-    }
+/* Nav scroll */
+var nav = document.getElementById('nav');
+window.addEventListener('scroll', function() { nav.classList.toggle('sc', window.scrollY > 48); }, {passive: true});
 
-    document.querySelectorAll(`[data-${lang}]`).forEach(el => {
-      const val = el.getAttribute(`data-${lang}`);
-      if (val) el.innerHTML = val;
-    });
-  }
+/* Mobile menu */
+var mob = document.getElementById('mob'), burger = document.getElementById('burger');
+function tm() { var o = mob.classList.toggle('open'); burger.classList.toggle('open', o); burger.setAttribute('aria-expanded', String(o)); document.body.style.overflow = o ? 'hidden' : ''; }
+function cm() { mob.classList.remove('open'); burger.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; }
 
-  // Scroll nav
-  const nav = document.getElementById('main-nav');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 50);
-  });
+/* Services jump nav */
+function jmp(id) { var el = document.getElementById(id); if (el) { var y = el.getBoundingClientRect().top + window.scrollY - 90; window.scrollTo({top: y, behavior: 'smooth'}); } }
 
-  // Intersection observer for fade-up
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-  }, { threshold: 0.08 });
+/* FAQ icons */
+document.addEventListener('toggle', function(e) { if (e.target.tagName === 'DETAILS') { var i = e.target.querySelector('.fqi'); if (i) i.textContent = e.target.open ? '−' : '+'; } }, true);
 
-  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
-
-  // Hero immediate
-  setTimeout(() => {
-    document.querySelectorAll('.hero .fade-up').forEach(el => el.classList.add('in'));
-  }, 120);
+/* Browser back */
+window.addEventListener('popstate', function(e) { if (e.state && e.state.pg) go(e.state.pg); });
+try { history.replaceState({pg: 'home'}, '', '/'); } catch(e) {}
 </script>
-
 </body>
 </html>

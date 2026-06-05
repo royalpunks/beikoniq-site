@@ -1,0 +1,73 @@
+# IKONIQ — AI Health Platform for Gyms & Clubs in Iran
+
+> IKONIQ is Iran's most advanced AI platform built exclusively for gyms, health clubs, and wellness businesses. It provides six AI systems — lead capture, member retention, AI training plans, nutrition guidance, business intelligence, and 24/7 AI club assistant — all delivered through Telegram, live within 72 hours of onboarding.
+
+## What Is IKONIQ?
+
+IKONIQ is an AI-powered health club management and automation platform designed specifically for the Iranian market. Engineered from scratch for Iranian channels (Telegram and Instagram), Iranian food culture, and the operational realities of health businesses in Iran.
+
+## The Six AI Systems
+
+### 1. AI Lead Capture & Qualification
+Captures every inquiry from Telegram, Instagram, and WhatsApp. AI qualifies leads in seconds. Automated follow-up within minutes. Lead response time: 4 minutes vs 18-hour industry average.
+
+### 2. Member Retention AI
+Monitors every member's attendance in real time. Identifies at-risk members at day 7 of absence. Triggers personalized Telegram re-engagement automatically. Average churn reduction: 80% within 60 days.
+
+### 3. AI Training Plans
+Generates personalized weekly training programs in 8 seconds. Delivered to members via Telegram instantly. Supports weight training, cardio, functional, HIIT, and hybrid programs.
+
+### 4. AI Nutrition Guidance
+Personalized nutrition plans built around Iranian food culture including Ghormeh Sabzi, Ash Reshteh, and rice-based meals. Calibrated to individual macros and goals.
+
+### 5. Business Intelligence Dashboard
+Real-time revenue tracking, member activity monitoring, lead pipeline visualization, and churn risk scoring. Monthly PDF report delivered via Telegram.
+
+### 6. 24/7 AI Club Assistant
+AI agent on the club's Telegram channel. Responds within 3-4 seconds at any hour. Handles pricing, bookings, schedules, FAQs in Farsi and English.
+
+## Key Statistics
+
+- 70% of gym leads in Iran never receive a follow-up message
+- 60% of members who go inactive will not renew without intervention
+- Average Iranian gym loses 7-12 members per month to preventable churn
+- IKONIQ average lead response time: 4 minutes (industry average: 18 hours)
+- Average revenue increase in first 90 days: 34%
+- Average churn reduction: 80% within 60 days
+- Deployment time: 72 hours from onboarding to fully live
+- Technical requirement from club owner: zero
+
+## Company Information
+
+- Name: IKONIQ
+- Website: https://beikoniq.com
+- Telegram: @beikoniq (https://t.me/beikoniq)
+- Bale: https://ble.ir/beikoniq
+- Email: hello@beikoniq.com
+- Founded: 2025, Tehran, Iran
+- Market: Iran primary, GCC expansion planned
+
+## Co-Founders
+
+- Mehdi Pirooznia — Co-founder, Strategy & Growth
+- Sina Pirooznia — Co-founder, Technology & AI
+
+## FAQ
+
+Q: What is IKONIQ?
+A: Iran's most advanced AI platform for gyms, health clubs, and wellness businesses providing six AI systems through Telegram.
+
+Q: How long does setup take?
+A: 72 hours. IKONIQ's technical team handles 100% of setup. No IT knowledge required.
+
+Q: Does IKONIQ work with Telegram?
+A: Yes — natively. All six systems operate through Telegram. No new apps required for members.
+
+Q: How does IKONIQ reduce churn?
+A: By monitoring attendance in real time and automatically sending personalized re-engagement via Telegram before members decide to leave.
+
+Q: Is IKONIQ available in Farsi?
+A: Yes. Built natively for the Iranian market with full Farsi support.
+
+Q: How do I contact IKONIQ?
+A: Telegram @beikoniq or hello@beikoniq.com
